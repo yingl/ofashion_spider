@@ -46,8 +46,8 @@ class Spider:
                         r = of_database.Source()
                         r.brand = brand
                         r.url = product_url
-                        r.pid = source_id
                         r.status = of_config.status_new # 新写入，等待解析具体内容。
+                    r.pid = source_id # 强制更新
                     r.save()
             r = of_database.Source.select().where(of_database.Source.url == url).get()
             r.status = status

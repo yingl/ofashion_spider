@@ -23,26 +23,23 @@ def loop(config):
     spiders = of_utils.load_spiders(config.spiders, logger)
     rqueue = of_queue.Queue(config.rqueue)
     mapping = config.mapping
-    try:
-        '''
-        jobs = [{'source_id': 200, 
-                 'pid': 100,
-                 'url': "http://store.tods.cn/Tods/CN/Tod's-Wave-迷你牛皮背包/p/XBWAMRGD101MCAL020"}] # Mock fetch a job
-        for job in jobs:
-        '''
-        while True:
+    '''
+    jobs = [{'source_id': 200, 
+                'pid': 100,
+                'url': "http://store.tods.cn/Tods/CN/Tod's-Wave-迷你牛皮背包/p/XBWAMRGD101MCAL020"}] # Mock fetch a job
+    for job in jobs:
+    '''
+    while True:
+        try:
             r = rqueue.get()
-            print(r)
             job = eval(r)
-            print(job)
             url = job['url']
             domain = of_utils.get_domain(url)
             brand = mapping[domain]
             spider = spiders[brand]
             spider.proc(brand, job['source_id'], job['pid'], url)
-            break
-    except Exception as e:
-        logger.exception(traceback.format_exc())
+        except Exception as e:
+            logger.exception(traceback.format_exc())
 
 if __name__ == '__main__':
     args = parse_args()

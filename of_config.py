@@ -22,4 +22,9 @@ unit_rmb = 'RMB'
 unit_usd = 'USD'
 
 mapping = {'store.tods.cn': 'tods',
-           'cn.vancleefarpels.com': 'vancleef'}
+           'cn.vancleefarpels.com': 'vancleef',
+           'www.omegawatches.cn': 'omega',
+           'www.longines.cn': 'longines',
+           'www.patek.com': 'patek',
+           'www.vacheron-constantin.cn': 'constantin',
+           'cn.jaeger-lecoultre.com': 'lecoultre'}
