@@ -27,4 +27,9 @@ mapping = {'store.tods.cn': 'tods',
            'www.longines.cn': 'longines',
            'www.patek.com': 'patek',
            'www.vacheron-constantin.cn': 'constantin',
-           'cn.jaeger-lecoultre.com': 'lecoultre'}
+           'cn.jaeger-lecoultre.com': 'lecoultre',
+           'www.panerai.cn': 'panerai',
+           'www.iwc.com': 'iwc',
+           'www.blancpain.com': 'blancpain',
+           'www.audemarspiguet.com': 'audemarspiguet',
+           'www.breguet.com': 'breguet'}

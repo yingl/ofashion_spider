@@ -5,7 +5,7 @@ import of_utils
 
 class Constantin(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.article_list_container > div.article.filtered > a')
+        elements = of_utils.find_elements_by_css_selector(driver, 'ul.products > li > a')
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):

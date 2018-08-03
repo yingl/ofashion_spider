@@ -34,7 +34,7 @@ def find_elements_by_css_selector(element, selector):
         return element.find_elements_by_css_selector(selector)
     except:
         return []
-
+   
 def create_flogger(filename, level=logging.INFO):
     logger = logging.getLogger(filename)
     logger.setLevel(level)

@@ -3,7 +3,7 @@ sys.path.append('../')
 import of_spider
 import of_utils
 
-class Constantin(of_spider.Spider):
+class Lecoultre(of_spider.Spider):
     def parse_entry(self, driver):
         elements = of_utils.find_elements_by_css_selector(driver, 'section.teaser-general > div > div.plp-crd > a')
         return [element.get_attribute('href').strip() for element in elements]
