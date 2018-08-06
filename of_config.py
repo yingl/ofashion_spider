@@ -35,4 +35,6 @@ mapping = {'store.tods.cn': 'tods',
            'www.breguet.com': 'breguet',
            'www.chaumet.cn': 'chaumet',
            'www.tudorwatch.cn': 'tudor',
-           'www.mikimoto.com.hk': 'mikimoto'}
+           'www.mikimoto.com.hk': 'mikimoto',
+           'www.stellamccartney.cn': 'stellamccartney',
+           'cn.boucheron.com': 'boucheron'}
