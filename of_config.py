@@ -43,4 +43,5 @@ mapping = {'store.tods.cn': 'tods',
            'www.loreal-paris.com.hk': 'loreal',
            'www.lancome.com.cn': 'lancome',
            'cn.chowsangsang.com': 'chowsangsang',
-           'www.skii.com.cn': 'skii'}
+           'www.skii.com.cn': 'skii',
+           'www.jeanrichard.com': 'jeanrichard'}
