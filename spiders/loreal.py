@@ -5,7 +5,19 @@ import of_utils
 
 class Loreal(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, 'a.link.product-title')
+        product_count = 0
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, 'a.link.product-title')
+            if len(elements) > product_count:
+                product_count = len(elements)
+                btns = of_utils.find_elements_by_css_selector(driver, 'a.more-content')
+                for btn in btns:
+                    if btn.get_attribute('style'):
+                        continue
+                    driver.execute_script('arguments[0].click();', btn)
+                of_utils.sleep(4)
+            else:
+                break
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
