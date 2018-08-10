@@ -15,8 +15,8 @@ def sleep(seconds):
 
 def create_chrome_driver():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
+    # options.add_argument('--headless')
+    # options.add_argument('--disable-gpu')
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--ignore-ssl-errors')
     driver = webdriver.Chrome(chrome_options=options)
