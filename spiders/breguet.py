@@ -35,5 +35,7 @@ class Breguet(of_spider.Spider):
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.field-items > div.field-item > p')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div#description')
         product['detail'] = element.text.strip()
         return product
