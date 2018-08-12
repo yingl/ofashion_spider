@@ -17,7 +17,10 @@ class StellaMccartney(of_spider.Spider):
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
-        # code N/A
+        # code
+        element = of_utils.find_element_by_css_selector(driver, 'div.left > div.modelFabricColor > span.value')
+        if element:
+            product['code'] = element.text.strip()
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.priceUpdater > span.price > span.value')
         if element:
@@ -28,6 +31,6 @@ class StellaMccartney(of_spider.Spider):
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.yItemDescription >div.editorialdescription > span.value')
-        product['detail'] = element.text.strip()
+        element = of_utils.find_element_by_css_selector(driver, 'div.contentDesc > div.details > span.value')
+        product['detail'] = element.get_attribute('innerHTML').strip().replace('<br>', '')
         return product
