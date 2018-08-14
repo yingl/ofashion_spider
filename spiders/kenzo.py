@@ -28,5 +28,10 @@ class Kenzo(of_spider.Spider):
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.product-point > div#p-intro > div.des > p')
-        product['detail'] = element.text.strip()
+        if element:
+            product['detail'] = element.text.strip()
+        else:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-point > div#p-intro > div.des > div')
+            texts = [element.text.strip() for element in elements]
+            product['detail'] = '\n'.join(texts)
         return product
