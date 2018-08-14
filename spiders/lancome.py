@@ -5,11 +5,16 @@ import of_utils
 
 class Lancome(of_spider.Spider):
     def parse_entry(self, driver):
-        products = []
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.list-product > div > div.plp-slide > div > div > a.modUrl')
-        for element in elements:
-            products.append(element.get_attribute('href').strip() )
-        return products
+        product_count = 0
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.list-product > div > div.plp-slide > div > div > a.modUrl')
+            if len(elements) > product_count:
+                product_count = len(elements)
+                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+                of_utils.sleep(4)
+            else:
+                break
+        return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
         driver.implicitly_wait(10)
