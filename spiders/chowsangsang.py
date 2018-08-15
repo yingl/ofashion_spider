@@ -30,7 +30,7 @@ class ChowSangSang(of_spider.Spider):
         if element:
             product['code'] = element.text.split('#')[-1].strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.productPrice > span.price-original')
+        element = of_utils.find_element_by_css_selector(driver, 'div.productPrice > span.price')
         if element:
             try:
                 price_text = element.text.strip()[1:].strip().replace(',', '')

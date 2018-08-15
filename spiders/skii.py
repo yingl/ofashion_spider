@@ -13,6 +13,8 @@ class Skii(of_spider.Spider):
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'div.pd__info__main > h1')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-name > h2')
         if element:
             product['title'] = element.text.strip()
         else:
@@ -28,14 +30,20 @@ class Skii(of_spider.Spider):
                 pass
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.pd__info__photo > div.img > img')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.left > div.img > img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
         texts = []
         elements = of_utils.find_elements_by_css_selector(driver, 'div.pd__info__main > p')
-        for element in elements:
-            text = element.text.strip()
-            if text:
-                texts.append(text)
-        product['detail'] = '\n'.join(texts)
+        if elements:
+            for element in elements:
+                text = element.text.strip()
+                if text:
+                    texts.append(text)
+            product['detail'] = '\n'.join(texts)
+        else:
+            element = of_utils.find_element_by_css_selector(driver, 'div.box.description-box > p')
+            product['detail'] = element.text.strip()
         return product
