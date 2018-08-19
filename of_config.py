@@ -55,4 +55,9 @@ mapping = {'store.tods.cn': 'tods',
            'cn.ecco.com': 'ecco',
            'www.dhc.net.cn': 'dhc',
            'www.danielwellington.cn': 'danielwellington',
-           'www.ysl.com': 'ysl'}
+           'www.ysl.com': 'ysl',
+           'www.gucci.cn': 'gucci',
+           'www.bottegaveneta.com': 'bv',
+           'china.elizabetharden.com': 'elizabetharden',
+           'www.etro.com': 'etro',
+           'cn.fresh.com': 'fresh'}
