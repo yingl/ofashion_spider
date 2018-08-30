@@ -17,7 +17,7 @@ class Ysl(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
-        of_utils.sleep(8) # Sleep for loading
+        of_utils.sleep(12) # Sleep for loading
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > div > span.modelName')

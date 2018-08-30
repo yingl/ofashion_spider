@@ -10,8 +10,8 @@ class VanCleef(of_spider.Spider):
             elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-list > li > div > div.product-image > a')
             if len(elements) > product_count:
                 product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
-                of_utils.sleep(6)
+                driver.execute_script('arguments[0].scrollIntoView(true)', elements[-1])
+                of_utils.sleep(8)
             else:
                 break
         return [element.get_attribute('href').strip() for element in elements]
