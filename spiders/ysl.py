@@ -11,7 +11,7 @@ class Ysl(of_spider.Spider):
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
-                of_utils.sleep(8)
+                of_utils.sleep(20)
             else:
                 break
         return [element.get_attribute('href').strip() for element in elements]
