@@ -66,4 +66,5 @@ mapping = {'store.tods.cn': 'tods',
            'www.giuseppezanotti.cn': 'giuseppezanotti',
            'www.hublot.cn': 'hublot',
            'www.helenarubinstein.cn': 'helenarubinstein',
-           'www.hamiltonwatch.com': 'hamiltonwatch'}
+           'www.hamiltonwatch.com': 'hamiltonwatch',
+           'www.kanebo-global.com': 'kanebo'}
