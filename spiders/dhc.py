@@ -25,7 +25,7 @@ class Dhc(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'div.detail-label > span')
+        element = of_utils.find_element_by_css_selector(driver, 'div.frabic-detail-right > h3')
         if element:
             product['title'] = element.text.strip()
         else:
