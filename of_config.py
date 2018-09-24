@@ -73,4 +73,6 @@ mapping = {'store.tods.cn': 'tods',
            'www.freeplus.cn': 'freeplus',
            'www.lunasol-net.com': 'lunasol',
            'www.izzue.com': 'izzue',
-           'www.jurlique.com.cn': 'jurlique'}
+           'www.jurlique.com.cn': 'jurlique',
+           'www.kiehls.com.cn': 'kiehls',
+           'sekkisei.kose.com.cn': 'kose'}
