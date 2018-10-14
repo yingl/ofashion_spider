@@ -79,4 +79,6 @@ mapping = {'store.tods.cn': 'tods',
            'store.moncler.cn': 'moncler',
            'www.hugoboss.cn': 'hugoboss',
            'cn.mcmworldwide.com': 'mcm',
-           'www.harrywinston.cn': 'harrywinston'}
+           'www.harrywinston.cn': 'harrywinston',
+           'www.arcteryx.com': 'arcteryx',
+           'cn.sportmax.com': 'sportmax'}
