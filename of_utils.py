@@ -67,3 +67,14 @@ def load_spiders(path, logger):
                 except:
                     pass
     return spiders
+
+def get_base_url(url):
+    return url.split('?')[0]
+
+def get_url_parameters(url):
+    parameters = {}
+    kvs = url.split('?')[-1].split('&')
+    for kv in kvs:
+        k, v = kv.split('=')
+        parameters[k] = v
+    return parameters

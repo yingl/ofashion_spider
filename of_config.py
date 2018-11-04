@@ -84,4 +84,9 @@ mapping = {'store.tods.cn': 'tods',
            'cn.sportmax.com': 'sportmax',
            'www.maje.cn': 'maje',
            'www.sandro-paris.cn': 'sandroparis',
-           'www.pinko.com': 'pinko'}
+           'www.pinko.com': 'pinko',
+           'www.chopard.cn': 'chopard',
+           'www.debeers.com.cn': 'debeers',
+           'www.dsquared2.cn': 'dsquared2',
+           'row.jimmychoo.com': 'jimmychoo',
+           'www.banilaco.com.cn': 'banilaco'}
