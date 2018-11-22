@@ -3,7 +3,7 @@ sys.path.append('../')
 import of_spider
 import of_utils
 
-class VanCleef(of_spider.Spider):
+class Chanel(of_spider.Spider):
     def parse_entry(self, driver):
         # 手袋
         elements = of_utils.find_elements_by_css_selector(driver, 'div.fs-products-grid__product.fs-gridelement > div.fs-products-grid__product__illu > a')
