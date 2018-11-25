@@ -99,4 +99,6 @@ mapping = {'store.tods.cn': 'tods',
            'store.balenciaga.cn': 'balenciaga',
            'www.cartier.cn': 'cartier',
            'www.tiffany.cn': 'tiffany',
-           'store.dolcegabbana.com': 'dolcegabbana'}
+           'store.dolcegabbana.com': 'dolcegabbana',
+           'china.coach.com': 'coach',
+           'www.valentino.cn': 'valentino'}
