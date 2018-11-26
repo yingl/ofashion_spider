@@ -28,6 +28,8 @@ class Chanel(of_spider.Spider):
             product['code'] = element.text.split(':')[-1].strip()
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'p.fnb_pdp-price')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'span.fs-productsheet__price_value.fs-price__value')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
