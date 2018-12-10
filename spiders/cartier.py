@@ -23,8 +23,10 @@ class Cartier(of_spider.Spider):
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.price')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            price_text = element.get_attribute('innerHTML').strip()
+            if not price_text.startswith('-￥'): # 有价格为-￥1的情况
+                price_text = price_text[1:].strip().replace(',', '') # 去掉开头的¥
+                product['price_cny'] = int(float(price_text))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.item.c-pdp__image--wrapper > div > img')
         images = [element.get_attribute('src').strip() for element in elements]

@@ -23,9 +23,14 @@ class Boucheron(of_spider.Spider):
             product['code'] = element.text.strip()
         # price_cny N/A
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.product-media > img')
-        images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join(images)
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-media > img')
+            images = [element.get_attribute('src').strip() for element in elements]
+            print(images[0])
+            if not images[0].endswith('.gif'):
+                break
+            else:
+                of_utils.sleep(5)
         # detail
         texts = []
         element = of_utils.find_element_by_css_selector(driver, 'p.shortDescription')
