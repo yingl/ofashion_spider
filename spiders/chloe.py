@@ -20,7 +20,7 @@ class Chloe(of_spider.Spider):
         of_utils.sleep(5)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'p.title > span.value')
+        element = of_utils.find_element_by_css_selector(driver, 'h1.productName > div > span.modelName')
         if element:
             product['title'] = element.text.strip()
         else:
