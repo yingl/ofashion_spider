@@ -32,6 +32,8 @@ class AcneStudios(of_spider.Spider):
             product['code'] = element.text.strip()
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.product-item__detail-name > div.product-price > span.price-sales')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-item__detail-price > div.product-price > span.price-sales')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))

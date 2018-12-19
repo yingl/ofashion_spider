@@ -11,7 +11,9 @@ class Dior(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.title-with-level > span > span')
+        element = of_utils.find_element_by_css_selector(driver, 'h1.title-with-level > span')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'h1.title-with-level > span > span')
         if element:
             product['title'] = element.text.strip()
         else:
