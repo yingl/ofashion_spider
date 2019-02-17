@@ -107,5 +107,7 @@ mapping = {'store.tods.cn': 'tods',
            'www.alexandermcqueen.cn': 'alexandermcqueen',
            'www.alexanderwang.cn': 'alexanderwang',
            'www.apm-monaco.cn': 'apmmonaco',
+           'www.apm-monaco.cn': 'apm',
+           'www.hermes.cn': 'hermes',
            'www.bally.cn': 'bally',
            'www.bobbibrown.com.cn': 'bobbibrown'}
