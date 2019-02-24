@@ -36,5 +36,7 @@ class Bally(of_spider.Spider):
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.js-preview-content > p')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div#tab1[itemprop=description]')
         product['detail'] = element.text.strip().replace('阅读更多', '')
         return product
