@@ -32,10 +32,9 @@ class Burberry(of_spider.Spider):
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
         # images
-        cover_image = of_utils.find_element_by_css_selector(driver, 'div.product-carousel_item > picture > img')
+        cover_images = of_utils.find_elements_by_css_selector(driver, 'div.product-carousel_item > picture > img')
         other_images = of_utils.find_elements_by_css_selector(driver, 'ul.product-gallery > li > div > picture > img')
-        elements = [cover_image]
-        elements.extend(other_images)
+        elements = cover_images + other_images
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
