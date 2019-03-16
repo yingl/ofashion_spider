@@ -39,6 +39,11 @@ class Loewe(of_spider.Spider):
             product['price_cny'] = int(float(price_text))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.lw-pdp-container-images > div.js-show-zoom > img')
+        if not elements:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-image-container > picture > img')
+            elements = [element]
+            _elements = of_utils.find_elements_by_css_selector(driver, 'div.js-show-zoom > picture > img')
+            elements += _elements
         images = [element.get_attribute('src').strip() for element in elements]
         images = list(set(images))
         product['images'] = ';'.join(images)
