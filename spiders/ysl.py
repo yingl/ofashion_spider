@@ -25,6 +25,8 @@ class Ysl(of_spider.Spider):
         element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > div > span.modelName')
         if not element:
             element = of_utils.find_element_by_css_selector(driver, 'div.product-tit > h1')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > span > span > div > span')
         if element:
             product['title'] = element.text.strip()
             if not product['title']:
