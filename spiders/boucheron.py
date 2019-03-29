@@ -28,6 +28,7 @@ class Boucheron(of_spider.Spider):
             images = [element.get_attribute('data-original').strip() for element in elements]
             print(images[0])
             if not images[0].endswith('.gif'):
+                product['images'] = images
                 break
             else:
                 of_utils.sleep(5)
