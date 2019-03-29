@@ -19,7 +19,7 @@ class Ysl(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
-        of_utils.sleep(12) # Sleep for loading
+        of_utils.sleep(5) # Sleep for loading
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > div > span.modelName')
@@ -44,6 +44,10 @@ class Ysl(of_spider.Spider):
                 price_text = price_text[1:].strip().replace(',', '') # 去掉开头的¥
                 product['price_cny'] = int(float(price_text))
         # images
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.thumb_wrapper > ul.alternativeImages > li')
+        if elements:
+            for i in range(len(elements)):
+                driver.execute_script('arguments[0].click();', elements[i])
         elements = of_utils.find_elements_by_css_selector(driver, 'div.itempage-images-content > ul.alternativeImages > li > img')
         if not elements:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.thumbnails-box > div > ul.swiper-wrapper > li > img')
