@@ -26,9 +26,8 @@ class Boucheron(of_spider.Spider):
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.product-media > img')
             images = [element.get_attribute('data-original').strip() for element in elements]
-            print(images[0])
             if not images[0].endswith('.gif'):
-                product['images'] = images
+                product['images'] = ';'.join(images)
                 break
             else:
                 of_utils.sleep(5)
