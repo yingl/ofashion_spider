@@ -34,7 +34,7 @@ class DeBeers(of_spider.Spider):
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.bxslider > div > a')
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.bxslider--new > div > a')
         images = [element.get_attribute('data-image').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
