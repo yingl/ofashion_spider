@@ -1,4 +1,6 @@
 import sys
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
 sys.path.append('../')
 import of_spider
 import of_utils
@@ -14,6 +16,18 @@ class AlexanderWang(of_spider.Spider):
                 of_utils.sleep(4)
             else:
                 break
+        if not elements:
+            while True:
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.swiper-wrapper > a.product-tile-link.swiper-slide-active')
+                if len(elements) > product_count:
+                    product_count = len(elements)
+                    action = ActionChains(driver).move_to_element(elements[-1])
+                    action.send_keys(Keys.PAGE_DOWN)
+                    action.send_keys(Keys.PAGE_DOWN)
+                    action.perform()
+                    of_utils.sleep(4)
+                else:
+                    break
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
