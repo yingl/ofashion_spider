@@ -5,9 +5,14 @@ import of_utils
 
 class Hermes(of_spider.Spider):
     def parse_entry(self, driver):
+        load_more = of_utils.find_element_by_css_selector(driver, 'button.load-more-button')
+        if load_more:
+            driver.execute_script('arguments[0].click();', load_more)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-grid-list.grid-list > li > article.product-item > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.product-item > a')
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
