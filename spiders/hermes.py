@@ -44,5 +44,7 @@ class Hermes(of_spider.Spider):
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > h2.field-name-field-description > div')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.field-name-field-description > div.field-item.even')
         product['detail'] = element.text.strip()
         return product
