@@ -8,8 +8,11 @@ class Chanel(of_spider.Spider):
         # 手袋
         elements = of_utils.find_elements_by_css_selector(driver, 'div.fs-products-grid__product.fs-gridelement > div.fs-products-grid__product__illu > a')
         if not elements:
-            # 彩妆
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.fnb_col-wd6.fnb_product-img > a')
+            # 手袋2
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.fs-products-grid > div.fs-products-grid__product.fs-gridelement > div.fs-products-grid__product__wrapper > a')
+            if not elements:
+                # 彩妆
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.fnb_col-wd6.fnb_product-img > a') 
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
