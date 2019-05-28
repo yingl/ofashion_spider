@@ -40,7 +40,7 @@ class Hermes(of_spider.Spider):
             product['price_cny'] = int(float(price_text))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'ul > li > button > span.product-images-navigation-image > img')
-        images = [element.get_attribute('src').strip().replace('-88-88.', '-320-320.') for element in elements]
+        images = [element.get_attribute('src').strip().replace('-88-88', '-320-320') for element in elements]
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > h2.field-name-field-description > div')
