@@ -8,6 +8,7 @@ class Hermes(of_spider.Spider):
         load_more = of_utils.find_element_by_css_selector(driver, 'button.load-more-button')
         if load_more:
             driver.execute_script('arguments[0].click();', load_more)
+        of_utils.sleep(5)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-grid-list.grid-list > li > article.product-item > a')
