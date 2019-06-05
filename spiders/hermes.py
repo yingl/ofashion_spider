@@ -36,6 +36,8 @@ class Hermes(of_spider.Spider):
             product['code'] = element.text.strip()
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > div.field-type-commerce-price')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > p.field-type-commerce-price')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
