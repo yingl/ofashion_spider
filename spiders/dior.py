@@ -6,6 +6,8 @@ import of_utils
 class Dior(of_spider.Spider):
     def parse_entry(self, driver):
         elements = of_utils.find_elements_by_css_selector(driver, 'div.product > div.product-image > a')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.product > a.product-link')
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
