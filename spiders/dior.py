@@ -23,13 +23,19 @@ class Dior(of_spider.Spider):
         # code Deal with detail
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.variation-option-price')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-actions>span')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'span.variation-option-price')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(price_text)
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image-grid > div[role=button] > div > div > img')
         if not elements:
             elements = of_utils.find_elements_by_css_selector(driver, 'ul > li.product-image-grid-image > button > div > div > img')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, 'button.product-media img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail

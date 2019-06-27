@@ -78,3 +78,9 @@ def get_url_parameters(url):
         k, v = kv.split('=')
         parameters[k] = v
     return parameters
+
+def convert_price(price):
+    try:
+        return int(float(price))
+    except:
+        return 0
