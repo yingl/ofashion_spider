@@ -15,33 +15,31 @@ class Coach(of_spider.Spider):
         return products
 
     def parse_product(self, driver):
-        of_utils.sleep(5)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1#curr_skuName')
+        element = of_utils.find_element_by_css_selector(driver, 'h1.cel-Product-infosName')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, '#curr_skuName')
         if element:
-            product['title'] = element.text.strip()
+            product['title'] = element.get_attribute('innerHTML').strip()
         else:
             raise Exception('Title not found')
-        # code
-        element = of_utils.find_element_by_css_selector(driver, 'p.pronumber')
-        if element:
-            product['code'] = element.text.split(':')[-1].strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'span.skuPrice')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'span.price#skuPrice')
+        element = of_utils.find_element_by_css_selector(driver, 'div.product-price>p')
         if element:
-            price_text = element.text.strip()[3:].strip().replace(',', '') # 去掉开头的RMB
-            product['price_cny'] = int(float(price_text))
+            price_text = element.get_attribute('data-gtm-product-sales-price').strip()
+            product['price_cny'] = of_utils.convert_price(price_text)
+        else:    
+            element = of_utils.find_element_by_css_selector(driver, '#skuPrices')
+            price_text = element.get_attribute('value').strip().replace(',','')
+            product['price_cny'] = of_utils.convert_price(price_text)
+        # code
+        element = of_utils.find_element_by_css_selector(driver, '#styleCode')
+        if element:
+        product['code'] = element.get_attribute('value').strip()
         # images
-        images = []
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul#fullscreen_swatchpro_small > li > img')
-        for element in elements:
-            txt = element.get_attribute('src').split('?')[0].strip()
-            images.append(txt)
-        product['images'] = ';'.join(images)
-        # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.description')
-        product['detail'] = element.text.strip()
+        main_img = of_utils.find_element_by_css_selector(driver, '#main_image').get_attribute('src').strip()
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.smallimg ul>li>a>img')
+        images = [element.get_attribute('lazy_src').strip() for element in elements] if elements else []
+        product['images'] = main_img + ';' + ';'.join(images)
         return product

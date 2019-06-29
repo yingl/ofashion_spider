@@ -42,6 +42,8 @@ class Prada(of_spider.Spider):
             product['price_cny'] = int(float(price_text))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.stiky-style-images > a.inventoryVariant > img')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, 'img.pdp-main-image')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail

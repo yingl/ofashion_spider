@@ -14,25 +14,20 @@ def loadmore(driver):
         return
 
 def parse_entry(driver):
-        product_count = 0
-        of_utils.sleep(10)
-        loadmore(driver)
-
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '.product-item-details>div>a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
-                of_utils.sleep(4)
-            else:
-                break
-        return [element.get_attribute('href').strip() for element in elements]
+    products = []
+    elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-list > li > div.img-box > a#product_detail_a')
+    for element in elements:
+        txt = element.get_attribute('name').strip()
+        txt = txt.replace('\n', '')
+        txt = txt.replace('\t', '')
+        products.append('https://china.coach.com' + txt)
+    return products
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.bulgari.cn/zh-cn/jewellery/rings.html')
+        driver.get('https://china.coach.com/women/newarrivals.htm?nav=09900100100')
         products = parse_entry(driver)
         print(products)
         print(len(products))

@@ -22,6 +22,8 @@ class Balenciaga(of_spider.Spider):
             product['code'] = element.get_attribute('innerHTML').split(':')[-1].strip()
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.priceUpdater > span.price > span.value')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.priceUpdater > div.itemPrice > span.price > span.value')
         if element:
             price_text = element.get_attribute('innerHTML').strip().replace(',', '')
             product['price_cny'] = int(float(price_text))

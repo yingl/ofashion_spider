@@ -5,7 +5,19 @@ import of_utils
 
 class Tiffany(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, 'a.itemDiv')
+        product_count = 0
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, 'article.product-tile>a')
+            if len(elements) > product_count:
+                product_count = len(elements)
+                btn = of_utils.find_element_by_css_selector(driver, 'div.show-more>a')
+                if btn:
+                    driver.execute_script('arguments[0].click();', btn)
+                else:
+                    break
+                of_utils.sleep(6)
+            else:
+                break
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
