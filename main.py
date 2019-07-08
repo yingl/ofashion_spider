@@ -32,6 +32,7 @@ def loop(config):
     while True:
         try:
             r = rqueue.get()
+            print(r)
             job = eval(r)
             url = job['url']
             domain = of_utils.get_domain(url)

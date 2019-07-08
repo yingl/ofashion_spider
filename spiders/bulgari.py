@@ -4,32 +4,23 @@ import of_spider
 import of_utils
 
 class Bulgari(of_spider.Spider):
-    def loadmore(driver):
-        btns = of_utils.find_elements_by_css_selector(driver, 'button.see-more')
-        if btns:
-            for btn in btns:
-                driver.execute_script('arguments[0].click();', btn)
-                of_utils.sleep(2)
-            loadmore(driver)    
-        else:
-            return
-
     def parse_entry(self, driver):
-        product_count = 0
         of_utils.sleep(10)
-        loadmore(driver)
-
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '.product-item-details>div>a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
-                of_utils.sleep(4)
+            btns = of_utils.find_elements_by_css_selector(driver, 'button.see-more')
+            if btns:
+                for btn in btns:
+                    driver.execute_script('arguments[0].click();', btn)
+                    of_utils.sleep(2)
             else:
                 break
+
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-item-details>div>a')
+        driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        of_utils.sleep(2)
         product = of_spider.empty_product.copy()
 
         ele = of_utils.find_element_by_css_selector(driver, 'div.product-name>h1')
@@ -44,6 +35,8 @@ class Bulgari(of_spider.Spider):
         # images
         imgs=[]
         eles = of_utils.find_elements_by_css_selector(driver, '.fotorama__thumb>img')
+        if not eles:
+            eles = of_utils.find_elements_by_css_selector(driver, '.fotorama__stage__frame>img')
         for ele in eles:
             img = ele.get_attribute('src').strip().replace('cache', '')
             for a in img.split('/'):
@@ -51,5 +44,5 @@ class Bulgari(of_spider.Spider):
                     img = img.replace(a,'')
             imgs.append(img)    
         product['images'] = ';'.join(imgs)
-
+        
         return product

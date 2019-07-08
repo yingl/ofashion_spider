@@ -18,7 +18,8 @@ def create_chrome_driver():
     # options.add_argument('--headless')
     # options.add_argument('--disable-gpu')
     options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--ignore-ssl-errors')
+    # prefs = {'profile.managed_default_content_settings.images': 2}
+    # options.add_experimental_option('prefs',prefs)
     driver = webdriver.Chrome(chrome_options=options)
     driver.maximize_window()
     return driver
@@ -81,6 +82,7 @@ def get_url_parameters(url):
 
 def convert_price(price):
     try:
-        return int(float(price))
-    except:
+        return int(float(price.replace('￥','').replace('¥','').replace(',','')))
+    except Exception as e:
+        print(e)
         return 0

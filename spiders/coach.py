@@ -36,7 +36,7 @@ class Coach(of_spider.Spider):
         # code
         element = of_utils.find_element_by_css_selector(driver, '#styleCode')
         if element:
-        product['code'] = element.get_attribute('value').strip()
+            product['code'] = element.get_attribute('value').strip()
         # images
         main_img = of_utils.find_element_by_css_selector(driver, '#main_image').get_attribute('src').strip()
         elements = of_utils.find_elements_by_css_selector(driver, 'div.smallimg ul>li>a>img')

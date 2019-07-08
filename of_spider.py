@@ -26,7 +26,7 @@ class Spider:
             except Exception as e:
                 result = traceback.format_exc()
                 status = of_config.status_failed
-            self.write_products(brand, url, source_id, pid, status, result)
+            # self.write_products(brand, url, source_id, pid, status, result)
         except Exception as e:
             self.logger.exception(traceback.format_exc())
         finally:

@@ -38,7 +38,7 @@ class Loewe(of_spider.Spider):
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.lw-pdp-container-images > div.js-show-zoom > img')
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.lw-pdp-container-images > div.js-show-zoom > picture > img')
         if not elements:
             element = of_utils.find_element_by_css_selector(driver, 'div.product-image-container > picture > img')
             elements = [element]

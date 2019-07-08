@@ -2,32 +2,36 @@ import sys
 import traceback
 sys.path.append('.')
 import of_utils
-
-def loadmore(driver):
-    btns = of_utils.find_elements_by_css_selector(driver, 'button.see-more')
-    if btns:
-        for btn in btns:
-            driver.execute_script('arguments[0].click();', btn)
-            of_utils.sleep(2)
-        loadmore(driver)    
-    else:
-        return
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-    products = []
-    elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-list > li > div.img-box > a#product_detail_a')
-    for element in elements:
-        txt = element.get_attribute('name').strip()
-        txt = txt.replace('\n', '')
-        txt = txt.replace('\t', '')
-        products.append('https://china.coach.com' + txt)
-    return products
+        urls = []
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, '.list-right-content .list-item .img-box a')
+            if elements:
+                for ele in elements:
+                    if ele.get_attribute('href') != None:
+                        urls.append(ele.get_attribute('href').strip())
+            
+            total_page =  of_utils.find_element_by_css_selector(driver, '#totalPages').get_attribute('value')
+            cur_page =  of_utils.find_element_by_css_selector(driver, '#currentPage').get_attribute('value')
+            # print('cur:%s,total:%s' % (cur_page,total_page))
+            if cur_page != total_page:
+                btn = of_utils.find_element_by_css_selector(driver, '.next-page')
+                if btn:
+                     driver.execute_script('arguments[0].click();', btn)
+                else:
+                    break
+            else:
+                break
+        return urls
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://china.coach.com/women/newarrivals.htm?nav=09900100100')
+        driver.get('https://cn.iteshop.com/b_it/women/new-arrivals?page=1&fo=ct&ct=5&customizeConditionsType=WOMEN_NEW_ARRIVALS')
         products = parse_entry(driver)
         print(products)
         print(len(products))

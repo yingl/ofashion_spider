@@ -120,4 +120,8 @@ mapping = {'store.tods.cn': 'tods',
            'www.givenchy.com': 'givenchy',
            'www.givenchybeauty.cn': 'givenchybeauty',
            'www.bulgari.cn':'bulgari',
-           'www.celine.com':'celine'}
+           'www.celine.com':'celine',
+           'www.versace.cn':'versace',
+           'store.miumiu.cn':'miumiu',
+           'www.fendi.cn':'fendi',
+           'cn.iteshop.com':'it'}
