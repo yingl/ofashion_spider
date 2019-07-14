@@ -1,0 +1,50 @@
+import sys
+sys.path.append('../')
+import of_spider
+import of_utils
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
+
+class Armani_Beauty(of_spider.Spider):
+    def parse_entry(self, driver):
+        product_count = 0
+        while True:
+            eles = of_utils.find_elements_by_css_selector(driver,'.search_result_items .contentcarousel_list_item a')
+            if len(eles) > product_count:
+                product_count = len(eles)
+                action = ActionChains(driver).move_to_element(eles[-1])
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.perform()
+                of_utils.sleep(4)
+            else:
+                break
+        return [ele.get_attribute('href').strip() for ele in eles]
+
+    def parse_product(self, driver):
+        product = of_spider.empty_product.copy()
+        # title
+        element = of_utils.find_element_by_css_selector(driver, '#pdpMain h1.product_subtitle')
+        if element:
+            product['title'] = element.text.strip()
+        else:
+            raise Exception('Title not found')
+        # code N/A
+        # price_cny
+        element = of_utils.find_element_by_css_selector(driver, '.product_add_to_cart .product_price')
+        if element:
+            product['price_cny'] = of_utils.convert_price(element.get_attribute('data-pricevalue'))
+        # images
+        elements = of_utils.find_elements_by_css_selector(driver, '.product_thumbnails ul li.thumb a')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver,'.product_primary_image a')
+        images = [element.get_attribute('href').strip() for element in elements]
+        product['images'] = ';'.join(images)
+        # detail
+        element = of_utils.find_element_by_css_selector(driver, '#pdpMain .product_description_box>div>span')
+        if element:
+            product['detail'] = element.text.strip()
+        return product
