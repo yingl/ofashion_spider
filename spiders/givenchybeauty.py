@@ -11,7 +11,7 @@ class GivenchyBeauty(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.product-name')
+        element = of_utils.find_element_by_css_selector(driver, '.giv-ProductDetailHeaderWrapper--desktop .product-name')
         if element:
             product['title'] = element.text.strip()
         else:

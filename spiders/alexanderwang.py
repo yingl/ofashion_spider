@@ -9,7 +9,7 @@ class AlexanderWang(of_spider.Spider):
     def parse_entry(self, driver):
         product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-grid > li a.swiper-slide-active')
+            elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-grid a.swiper-slide-active')
             if len(elements) > product_count:
                 product_count = len(elements)
                 action = ActionChains(driver).move_to_element(elements[-1])
@@ -22,6 +22,7 @@ class AlexanderWang(of_spider.Spider):
                 of_utils.sleep(4)
             else:
                 break
+        return [ele.get_attribute('href').strip() for ele in elements]
 
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()

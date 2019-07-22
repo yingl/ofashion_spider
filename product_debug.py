@@ -8,34 +8,45 @@ import of_utils
 def parse_product(driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.product__title')
+        element = of_utils.find_element_by_css_selector(driver, 'div#productName > h1')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock h1#productName')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, '.product__subText')
+        element = of_utils.find_element_by_css_selector(driver, 'div.sku')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'span.sku')
         if element:
             product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.product__priceValue')
+        element = of_utils.find_element_by_css_selector(driver, 'td.priceValue')
+        if not element:
+            element =  of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock div.priceBlock div.priceValue')
         if element:
-            product['price_cny'] = of_utils.convert_price(element.text.strip())
+            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
+            product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.j-productImages picture:not(.productImages__imgAltWrapper) img')
-        print(elements)
-        images = [element.get_attribute('src').strip() for element in elements]
+        elements = of_utils.find_elements_by_css_selector(driver, '.thumbnails ul li picture source')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, '#productMainImage source')  
+        images = [element.get_attribute('srcset').strip().split(',')[0] for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, '.detailInfo__description')
-        product['detail'] = element.text.strip()
+        element = of_utils.find_element_by_css_selector(driver, 'div.productDescription[itemprop=description]')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div#productDescription')
+        if element:
+            product['detail'] = element.text.strip()
         return product
-
+        
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.tods.cn/cn-zh/Tod\'s-Joy-%E4%B8%AD%E5%8F%B7%E8%B4%AD%E7%89%A9%E6%89%8B%E8%A2%8B/p/XBWANXA0300LU4B612/')
+        driver.get('https://www.louisvuitton.cn/zhs-cn/products/avenue-sling-bag-damier-infini-nvprod1300037v')
         product = parse_product(driver)
         print(product)
     except Exception as e:

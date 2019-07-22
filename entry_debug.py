@@ -6,23 +6,28 @@ from selenium.webdriver.common.action_chains import ActionChains # 对该页面�
 from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-        product_count = 0
+        urls = []
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.listingItem>a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                action = ActionChains(driver).move_to_element(elements[-1])
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.perform()
-                of_utils.sleep(4)
+            elements = of_utils.find_elements_by_css_selector(driver, '.list-right-content .list-item .img-box a')
+            if elements:
+                for ele in elements:
+                    if ele.get_attribute('href') != None:
+                        urls.append(ele.get_attribute('href').strip())
+            
+            total_page =  of_utils.find_element_by_css_selector(driver, '#totalPages').get_attribute('value')
+            cur_page =  of_utils.find_element_by_css_selector(driver, '#currentPage').get_attribute('value')
+            # print('cur:%s,total:%s' % (cur_page,total_page))
+            if cur_page != total_page:
+                btn = of_utils.find_element_by_css_selector(driver, '.next-page')
+                if btn:
+                     driver.execute_script('arguments[0].click();', btn)
+                     of_utils.sleep(4)
+                else:
+                    break
             else:
                 break
-        return [element.get_attribute('href').strip() for element in elements]
-           
+        return urls
+ 
         # of_utils.sleep(10)
         # elements = of_utils.find_elements_by_css_selector(driver,'.rlxr-watchgrid__watch-list-item>a')
         # return [element.get_attribute('href').strip() for element in elements]
@@ -42,7 +47,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.tods.cn/cn-zh/%E5%A5%B3/%E5%8C%85%E8%A2%8B/%E6%89%98%E7%89%B9%E6%89%8B%E8%A2%8B/c/123-Tods/')
+        driver.get('https://cn.iteshop.com/b_it/women/clothing/coats&jackets')
         products = parse_entry(driver)
         print(products)
         print(len(products))

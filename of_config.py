@@ -23,6 +23,7 @@ unit_usd = 'USD'
 
 mapping = {'store.tods.cn': 'tods',
            'cn.vancleefarpels.com': 'vancleef',
+           'www.vancleefarpels.cn':'vancleef',
            'www.omegawatches.cn': 'omega',
            'www.longines.cn': 'longines',
            'www.patek.com': 'patek',
@@ -133,4 +134,5 @@ mapping = {'store.tods.cn': 'tods',
            'www.armani.com':'armani',
            'www.giorgioarmanibeauty.cn':'armani_beauty',
            'www.rolex.cn':'rolex',
-           'www.piaget.cn':'piaget'}
+           'www.piaget.cn':'piaget',
+           'www.tods.cn':'tods'}

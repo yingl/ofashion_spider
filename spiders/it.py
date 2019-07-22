@@ -20,6 +20,7 @@ class IT(of_spider.Spider):
                 btn = of_utils.find_element_by_css_selector(driver, '.next-page')
                 if btn:
                      driver.execute_script('arguments[0].click();', btn)
+                     of_utils.sleep(4)
                 else:
                     break
             else:

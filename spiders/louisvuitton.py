@@ -44,10 +44,10 @@ class LouisVuitton(of_spider.Spider):
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul.akamai-enabled.bigs > li > img')
+        elements = of_utils.find_elements_by_css_selector(driver, '.thumbnails ul li picture source')
         if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, '#productSheetSlideshow>div[role=presentation]>div>ul>li>button>img')  
-        images = [element.get_attribute('src').strip() for element in elements]
+            elements = of_utils.find_elements_by_css_selector(driver, '#productMainImage source')  
+        images = [element.get_attribute('srcset').strip().split(',')[0] for element in elements]
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.productDescription[itemprop=description]')

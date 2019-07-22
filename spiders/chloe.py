@@ -32,7 +32,7 @@ class Chloe(of_spider.Spider):
             price_text = element.text.strip().replace(',', '')
             product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul.productAlternative > div.slick-track  > li > span.thumbWrap > img')
+        elements = of_utils.find_elements_by_css_selector(driver, 'ul.productAlternative .slick-track .thumbWrap img')
         images = []
         for element in elements:
             img = element.get_attribute('src').strip().replace('_8_', '_22_')

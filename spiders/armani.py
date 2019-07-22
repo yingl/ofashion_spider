@@ -34,6 +34,8 @@ class Armani(of_spider.Spider):
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'h1.item-name>div>span')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'h1.item-name>span')
         if element:
             product['title'] = element.text.strip()
         else:
