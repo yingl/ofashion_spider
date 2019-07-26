@@ -33,7 +33,7 @@ def loop(config):
         try:
             r = rqueue.get()
             print(r)
-            job = eval(r)
+            job = eval(r)    
             url = job['url']
             domain = of_utils.get_domain(url)
             brand = mapping[domain]
@@ -42,7 +42,21 @@ def loop(config):
         except Exception as e:
             logger.exception(traceback.format_exc())
 
+# def test(config):
+#     of_database.init_database(config.db)
+#     spiders = of_utils.load_spiders(config.spiders, logger)
+#     mapping = config.mapping
+#     job = {'source_id': 100370, 
+#             'pid': 100333,
+#             'url': "https://www.chloe.cn/cn/%E7%9A%AE%E5%A4%B9_cod22005800ob.html"}
+#     url = job['url']
+#     domain = of_utils.get_domain(url)
+#     brand = mapping[domain]
+#     spider = spiders[brand]
+#     spider.proc(brand, job['source_id'], job['pid'], url)
+
 if __name__ == '__main__':
     args = parse_args()
     config = importlib.import_module(args.config)
     loop(config)
+    # test(config)

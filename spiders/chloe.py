@@ -2,6 +2,7 @@ import sys
 sys.path.append('../')
 import of_spider
 import of_utils
+import of_errors
 
 class Chloe(of_spider.Spider):
     def parse_entry(self, driver):
@@ -33,6 +34,8 @@ class Chloe(of_spider.Spider):
             product['price_cny'] = int(float(price_text))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'ul.productAlternative .slick-track .thumbWrap img')
+        if not elements:
+            raise of_errors.ImagesError('Images not found')
         images = []
         for element in elements:
             img = element.get_attribute('src').strip().replace('_8_', '_22_')

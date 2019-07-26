@@ -7,31 +7,40 @@ sys.path.append('.')
 import of_config
 import of_database
 import of_utils
+import of_errors
+from retry import retry
+import time
 
 class Spider:
     def __init__(self, logger):
         self.logger = logger
     
+    
     def proc(self, brand, source_id, pid, url):
-        driver = None
         try:
-            driver = of_utils.create_chrome_driver()
-            driver.get(url)
             try:
-                if pid == -1: # entry
-                    result = self.parse_entry(driver)
-                else: # product
-                    result = self.parse_product(driver)
+                result = self.get_product(brand,source_id,pid,url)
                 status = of_config.status_finished
             except Exception as e:
                 result = traceback.format_exc()
                 status = of_config.status_failed
-            # self.write_products(brand, url, source_id, pid, status, result)
+            self.write_products(brand, url, source_id, pid, status, result)
         except Exception as e:
             self.logger.exception(traceback.format_exc())
+
+    @retry(of_errors.ImagesError,tries=3,delay=2,jitter=1)
+    def get_product(self, brand, source_id, pid, url):
+        try:
+            print ('get_product', int(time.time()))
+            driver = None
+            driver = of_utils.create_chrome_driver()
+            driver.get(url)
+            if pid == -1: # entry
+                return self.parse_entry(driver)
+            else: # product
+                return self.parse_product(driver)
         finally:
-            if driver:
-                driver.quit()
+            driver.quit()
 
     def write_products(self, brand, url, source_id, pid, status, result):
         if pid == -1: # entry

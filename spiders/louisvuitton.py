@@ -26,6 +26,8 @@ class LouisVuitton(of_spider.Spider):
         element = of_utils.find_element_by_css_selector(driver, 'div#productName > h1')
         if not element:
             element = of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock h1#productName')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'h1.fc-product-title')
         if element:
             product['title'] = element.text.strip()
         else:
@@ -40,14 +42,29 @@ class LouisVuitton(of_spider.Spider):
         element = of_utils.find_element_by_css_selector(driver, 'td.priceValue')
         if not element:
             element =  of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock div.priceBlock div.priceValue')
+        if not element:
+            element =  of_utils.find_element_by_css_selector(driver, '.fc-price-container')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = int(float(price_text))
         # images
+        images = []
         elements = of_utils.find_elements_by_css_selector(driver, '.thumbnails ul li picture source')
         if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, '#productMainImage source')  
-        images = [element.get_attribute('srcset').strip().split(',')[0] for element in elements]
+            elements = of_utils.find_elements_by_css_selector(driver, '#productMainImage source')
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver, '.fc-model-container .fc-display-images>div')
+
+        if elements:
+            for ele in elements:
+                img = ele.get_attribute('srcset')
+                if img:
+                    img = ele.get_attribute('srcset').strip().split(',')[0]
+                if not img:
+                    img = ele.get_attribute('data-src').strip()
+                if img:
+                    images.append(img)
+        # images = [element.get_attribute('srcset').strip().split(',')[0] for element in elements]
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.productDescription[itemprop=description]')

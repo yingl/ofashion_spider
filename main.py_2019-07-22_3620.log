@@ -1,0 +1,52 @@
+2019-07-22 11:40:47,009 - .\main.py - ERROR - Traceback (most recent call last):
+  File "E:\work\ofashion_spider\of_spider.py", line 26, in proc
+    self.write_products(brand, url, source_id, pid, status, result)
+  File "E:\work\ofashion_spider\of_spider.py", line 68, in write_products
+    if rows:
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1879, in __len__
+    self._ensure_execution()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1861, in _ensure_execution
+    self.execute()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1778, in inner
+    return method(self, database, *args, **kwargs)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1849, in execute
+    return self._execute(database)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2023, in _execute
+    cursor = database.execute(self)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2949, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2934, in execute_sql
+    cursor = self.cursor(commit)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2920, in cursor
+    self.connect()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2878, in connect
+    self._state.set_connection(self._connect())
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 3703, in _connect
+    raise ImproperlyConfigured('MySQL driver not installed!')
+peewee.ImproperlyConfigured: MySQL driver not installed!
+Traceback (most recent call last):
+  File "E:\work\ofashion_spider\of_spider.py", line 26, in proc
+    self.write_products(brand, url, source_id, pid, status, result)
+  File "E:\work\ofashion_spider\of_spider.py", line 68, in write_products
+    if rows:
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1879, in __len__
+    self._ensure_execution()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1861, in _ensure_execution
+    self.execute()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1778, in inner
+    return method(self, database, *args, **kwargs)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 1849, in execute
+    return self._execute(database)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2023, in _execute
+    cursor = database.execute(self)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2949, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2934, in execute_sql
+    cursor = self.cursor(commit)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2920, in cursor
+    self.connect()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 2878, in connect
+    self._state.set_connection(self._connect())
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\peewee.py", line 3703, in _connect
+    raise ImproperlyConfigured('MySQL driver not installed!')
+peewee.ImproperlyConfigured: MySQL driver not installed!
