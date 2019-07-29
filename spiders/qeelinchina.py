@@ -1,11 +1,14 @@
 import sys
-import traceback
-sys.path.append('.')
+sys.path.append('../')
 import of_spider
 import of_utils
 
+class Lorealparis(of_spider.Spider):
+    def parse_entry(self, driver):
+        elements = of_utils.find_elements_by_css_selector(driver, '.products-list .ql-product-block')
+        return ['https://qeelinchina.com'+element.get_attribute('data-ql-url').strip() for element in elements]
 
-def parse_product(driver):
+    def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, '.product-info .info')
@@ -27,17 +30,3 @@ def parse_product(driver):
         product['images'] = ';'.join(images)
         # detail N/A
         return product
-        
-if __name__ == '__main__':
-    driver = None
-    try:
-        driver = of_utils.create_chrome_driver()
-        driver.get('https://qeelinchina.com/sc/jewellery/categories/necklaces/NL-024-RG/')
-        product = parse_product(driver)
-        print(product)
-    except Exception as e:
-        print(e)
-        print(traceback.format_exc())
-    finally:
-        if driver:
-            driver.quit()

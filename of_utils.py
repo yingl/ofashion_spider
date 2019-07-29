@@ -82,7 +82,7 @@ def get_url_parameters(url):
 
 def convert_price(price):
     try:
-        return int(float(price.replace('￥','').replace('¥','').replace(',','')))
+        return int(float(price.replace('￥','').replace('¥','').replace(',','').replace('人民币','')))
     except Exception as e:
         print(e)
         return 0

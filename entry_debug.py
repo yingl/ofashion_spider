@@ -6,28 +6,8 @@ from selenium.webdriver.common.action_chains import ActionChains # 对该页面�
 from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-        urls = []
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '.list-right-content .list-item .img-box a')
-            if elements:
-                for ele in elements:
-                    if ele.get_attribute('href') != None:
-                        urls.append(ele.get_attribute('href').strip())
-            
-            total_page =  of_utils.find_element_by_css_selector(driver, '#totalPages').get_attribute('value')
-            cur_page =  of_utils.find_element_by_css_selector(driver, '#currentPage').get_attribute('value')
-            # print('cur:%s,total:%s' % (cur_page,total_page))
-            if cur_page != total_page:
-                btn = of_utils.find_element_by_css_selector(driver, '.next-page')
-                if btn:
-                     driver.execute_script('arguments[0].click();', btn)
-                     of_utils.sleep(4)
-                else:
-                    break
-            else:
-                break
-        return urls
- 
+        elements = of_utils.find_elements_by_css_selector(driver, '.products-list .ql-product-block')
+        return ['https://qeelinchina.com'+element.get_attribute('data-ql-url').strip() for element in elements]
         # of_utils.sleep(10)
         # elements = of_utils.find_elements_by_css_selector(driver,'.rlxr-watchgrid__watch-list-item>a')
         # return [element.get_attribute('href').strip() for element in elements]
@@ -47,7 +27,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://cn.iteshop.com/b_it/women/clothing/coats&jackets')
+        driver.get('https://qeelinchina.com/sc/jewellery/categories/necklaces/')
         products = parse_entry(driver)
         print(products)
         print(len(products))

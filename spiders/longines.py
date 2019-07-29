@@ -11,20 +11,19 @@ class Longines(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'li.item.category128 > a')
+        element = of_utils.find_element_by_css_selector(driver, '.share-pad')
         if element:
-            product['title'] = element.text.strip()
+            product['title'] = element.get_attribute('data-text2').strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'li.item.product')
+        element = of_utils.find_element_by_css_selector(driver,"meta[property='og:title']")
         if element:
-            product['code'] = element.text.strip()
+            product['code'] = element.get_attribute('content').strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.product-info-price > div > div.price-box > span > span > span.price')
+        element = of_utils.find_element_by_css_selector(driver, '.product-info-price span.price')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'img.fotorama__img')
         if elements:
@@ -33,5 +32,5 @@ class Longines(of_spider.Spider):
             elements = of_utils.find_elements_by_css_selector(driver, 'ul.newpdp-gallery-slider > li > img')
             images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
-        # detail 格式非常不友好，暂时不处理！
+        # detail N/A
         return product
