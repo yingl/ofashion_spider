@@ -31,6 +31,7 @@ class Chaumet(of_spider.Spider):
         for element in elements:
             k_element = of_utils.find_element_by_css_selector(element, 'span')
             v_element = of_utils.find_element_by_css_selector(element, 'p')
-            texts.append(k_element.text.strip() + '：' + v_element.text.strip())
+            txt = k_element.text.strip() + '：' + v_element.text.strip() if  k_element else v_element.text.strip()
+            texts.append(txt)
         product['detail'] = '\n'.join(texts)
         return product

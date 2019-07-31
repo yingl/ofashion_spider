@@ -11,11 +11,11 @@ class Longines(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.share-pad')
+        element = of_utils.find_element_by_css_selector(driver, "meta[name=keywords]")
         if element:
-            product['title'] = element.get_attribute('data-text2').strip()
+            product['title'] = element.get_attribute('content').strip().split('，')[0]
         else:
-            raise Exception('Title not found')
+            raise Exception('Title not found')    
         # code
         element = of_utils.find_element_by_css_selector(driver,"meta[property='og:title']")
         if element:
