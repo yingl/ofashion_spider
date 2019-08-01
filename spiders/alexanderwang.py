@@ -39,9 +39,10 @@ class AlexanderWang(of_spider.Spider):
             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'div.product-details-main-information_media>picture>img')
-        if elements:
-            images = [element.get_attribute('src') for element in elements]
-            product['images'] = ';'.join(images)
+        if not elements:
+            elements = of_utils.find_elements_by_css_selector(driver,'.product-details_images>picture>img')
+        images = [element.get_attribute('src') if element.get_attribute('src') else 'https://www.alexanderwang.cn'+element.get_attribute('data-src')  for element in elements]
+        product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, '.product-details-description>div>div')
         if element:

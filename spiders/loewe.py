@@ -6,8 +6,9 @@ import of_utils
 class Loewe(of_spider.Spider):
     def parse_entry(self, driver):
         view_all = of_utils.find_element_by_css_selector(driver, 'span.js-view-all-products')
-        driver.execute_script('arguments[0].click();', view_all)
-        of_utils.sleep(3)
+        if view_all:
+            driver.execute_script('arguments[0].click();', view_all)
+            of_utils.sleep(3)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.product-tile > figure.product-image > a.thumb-link')
