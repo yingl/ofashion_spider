@@ -6,20 +6,28 @@ from selenium.webdriver.common.action_chains import ActionChains # 对该页面�
 from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-        view_all = of_utils.find_element_by_css_selector(driver, 'span.js-view-all-products')
-        if view_all:
-            driver.execute_script('arguments[0].click();', view_all)
-            of_utils.sleep(3)
+        element = of_utils.find_element_by_css_selector(driver,'.js-infinite-scroll ')
+        if element:
+            driver.execute_script('arguments[0].click();', element)
+            of_utils.sleep(4)
+
         product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-tile > figure.product-image > a.thumb-link')
+            elements = of_utils.find_elements_by_css_selector(driver, '.product-card')
             if len(elements) > product_count:
                 product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+                action = ActionChains(driver).move_to_element(elements[-1])
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.perform()
                 of_utils.sleep(4)
             else:
                 break
         return [element.get_attribute('href').strip() for element in elements]
+
         # of_utils.sleep(10)
         # elements = of_utils.find_elements_by_css_selector(driver,'.rlxr-watchgrid__watch-list-item>a')
         # return [element.get_attribute('href').strip() for element in elements]
@@ -39,7 +47,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.loewe.com/chn/zh_CN/%E7%94%B7%E5%A3%AB%E7%B3%BB%E5%88%97/%E6%97%B6%E5%B0%9A%E9%85%8D%E9%A5%B0/%E8%83%B8%E9%92%88	')
+        driver.get('https://cn.maxmara.com/clothing/womens-dresses')
         products = parse_entry(driver)
         print(products)
         print(len(products))

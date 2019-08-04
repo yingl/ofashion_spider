@@ -18,13 +18,12 @@ class Jurlique(of_spider.Spider):
             raise Exception('Title not found')
         # code N/
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div > h1[itemprop=name]')
+        element = of_utils.find_element_by_css_selector(driver, '.regular-price .price')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price( element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.image > a > img#image-main')
-        images = [element.get_attribute('src').strip() for element in elements]
+        elements = of_utils.find_elements_by_css_selector(driver, '#image-gallery-zoom>div>a')
+        images = [element.get_attribute('href').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.short-description > div.std[itemprop=description]')
