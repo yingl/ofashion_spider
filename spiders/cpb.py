@@ -1,11 +1,22 @@
 import sys
-import traceback
-sys.path.append('.')
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
+sys.path.append('../')
 import of_spider
 import of_utils
 
 
-def parse_product(driver):
+class Cpb(of_spider.Spider):
+    def parse_entry(self, driver):
+        btn = of_utils.find_element_by_css_selector(driver, '.c-product-cards-list-all')
+        if btn:
+            driver.execute_script('arguments[0].click();', btn)
+            of_utils.sleep(4)
+
+        elements = of_utils.find_elements_by_css_selector(driver,'.c-product-cards-list-item .c-product-cards-photo-img')
+        return [element.get_attribute('href').strip() for element in elements]
+
+    def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, ".product-name")
@@ -28,17 +39,5 @@ def parse_product(driver):
         if element:
             product['detail'] = element.text.strip()
         return product
-
-if __name__ == '__main__':
-    driver = None
-    try:
-        driver = of_utils.create_chrome_driver()
-        driver.get('https://www.cledepeau-beaute.com.cn/intensive-emulsion-A15401.html?cgid=products-skincare-allproducts')
-        product = parse_product(driver)
-        print(product)
-    except Exception as e:
-        print(e)
-        print(traceback.format_exc())
-    finally:
-        if driver:
-            driver.quit()
+        
+        

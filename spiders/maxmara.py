@@ -33,26 +33,25 @@ class Maxmara(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.product_header_name>h3')
+        element = of_utils.find_element_by_css_selector(driver, "meta[property='og:title']")
         if element:
-            product['title'] = element.text.strip()
+            product['title'] = element.get_attribute('content').strip().replace('"','')
         else:
             raise Exception('Title not found')
-        # code N/
-        element = of_utils.find_element_by_css_selector(driver,'.product__product-details-shade-name')
+        # code
+        element = of_utils.find_element_by_css_selector(driver,'.secondary-info .p-secondary')
         if element:
              product['code'] = element.text.strip()
-        # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.product__price>span')
-        if element:
-            product['price_cny'] = of_utils.convert_price( element.text.strip())
+        # price_cny N/A
         # images
-        images = []
-        element = of_utils.find_element_by_css_selector(driver, "meta[property='og:image']")
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-images>div>img')
+        if elements:
+            images = [element.get_attribute('src').strip() for element in elements]
+            product['images'] = ';'.join(images)
+        # detail
+        element = of_utils.find_element_by_css_selector(driver,'#description-tab')
         if element:
-            images.append(element.get_attribute('content'))
-        product['images'] = ';'.join(images)
-        # detail N/A
+            product['detail'] = element.text.strip()
         return product
         
         

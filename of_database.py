@@ -28,6 +28,7 @@ class Source(Model):
     price_gbp = IntegerField(default=0.0) # 英镑报价
     price_jpy = IntegerField(default=0.0) # 日元报价
     price_usd = IntegerField(default=0.0) # 美元报价
+    price_hkd = IntegerField(default=0.0) # 港币
     images = TextField(default='')
     detail = TextField(default='')
     enabled = BooleanField(default=True)

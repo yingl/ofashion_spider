@@ -6,27 +6,8 @@ from selenium.webdriver.common.action_chains import ActionChains # 对该页面�
 from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-        element = of_utils.find_element_by_css_selector(driver,'.js-infinite-scroll ')
-        if element:
-            driver.execute_script('arguments[0].click();', element)
-            of_utils.sleep(4)
-
-        product_count = 0
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '.product-card')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                action = ActionChains(driver).move_to_element(elements[-1])
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.perform()
-                of_utils.sleep(4)
-            else:
-                break
-        return [element.get_attribute('href').strip() for element in elements]
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-list ul li a')
+        return [element.get_attribute('href').strip() for element in elements if 'tmall' not in element.get_attribute('href').strip()]
 
         # of_utils.sleep(10)
         # elements = of_utils.find_elements_by_css_selector(driver,'.rlxr-watchgrid__watch-list-item>a')
@@ -47,7 +28,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://cn.maxmara.com/clothing/womens-dresses')
+        driver.get('https://www.lorealparis.com.cn/SkinCare/Franchise/GrapeSeedSeries.loreal')
         products = parse_entry(driver)
         print(products)
         print(len(products))

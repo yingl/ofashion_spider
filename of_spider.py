@@ -83,6 +83,7 @@ class Spider:
                 r.price_gbp = result['price_gbp']
                 r.price_jpy = result['price_jpy']
                 r.price_usd = result['price_usd']
+                r.price_hkd = result['price_hkd']
                 r.images = result['images']
                 r.detail = result['detail']
             else: # status_failed
