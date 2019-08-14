@@ -6,29 +6,39 @@ from selenium.webdriver.common.action_chains import ActionChains # 对该页面�
 from selenium.webdriver.common.keys import Keys
 
 def parse_entry(driver):
-        elements = of_utils.find_elements_by_css_selector(driver, '.product-list ul li a')
-        return [element.get_attribute('href').strip() for element in elements if 'tmall' not in element.get_attribute('href').strip()]
+        while True:
+            btn = of_utils.find_element_by_css_selector(driver,'#load_more')
+            if btn and '查看更多' in btn.text.strip():
+                driver.execute_script('arguments[0].click();', btn)
+                of_utils.sleep(4)
+            else:
+                break    
 
-        # of_utils.sleep(10)
-        # elements = of_utils.find_elements_by_css_selector(driver,'.rlxr-watchgrid__watch-list-item>a')
-        # return [element.get_attribute('href').strip() for element in elements]
-
+        elements = of_utils.find_elements_by_css_selector(driver, "#gallery_show .goods-item .goods-pic a:not(.fast-Shop)")      
+        return [element.get_attribute('href').strip() for element in elements]     
         # product_count = 0
         # while True:
-        #     elements = of_utils.find_elements_by_css_selector(driver, 'ul.product-roll-ul > li.search-result > div > div > article > a')
+        #     elements = of_utils.find_elements_by_css_selector(driver, '#category-main .product a')
         #     if len(elements) > product_count:
         #         product_count = len(elements)
-        #         driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+        #         action = ActionChains(driver).move_to_element(elements[-1])
+        #         action.send_keys(Keys.PAGE_DOWN)
+        #         action.send_keys(Keys.PAGE_DOWN)
+        #         action.send_keys(Keys.PAGE_DOWN)
+        #         action.send_keys(Keys.PAGE_DOWN)
+        #         action.send_keys(Keys.PAGE_DOWN)
+        #         action.perform()
         #         of_utils.sleep(4)
         #     else:
         #         break
         # return [element.get_attribute('href').strip() for element in elements]
 
+
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.lorealparis.com.cn/SkinCare/Franchise/GrapeSeedSeries.loreal')
+        driver.get('https://vans.com.cn/gallery-index---0---27.html?utm_source=pc_homepage&utm_medium=pc_%E9%9E%8B%E6%AC%BE&utm_campaign=ownsite')
         products = parse_entry(driver)
         print(products)
         print(len(products))

@@ -30,10 +30,10 @@ class Cpb(of_spider.Spider):
         if element:
             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.c-block-shopingmodal-main-thumbnail .slick-list .slick-slide img')
-        if elements:
-            images = [element.get_attribute('src').strip() for element in elements]
-            product['images'] = ';'.join(images)
+        elements = of_utils.find_elements_by_css_selector(driver, '.c-block-shopingmodal-main-image .slick-list .slick-slide img')
+        images = [element.get_attribute('src').strip() for element in elements]
+        images = {}.fromkeys(images).keys()
+        product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver,'.c-block-richcontent-text')
         if element:
