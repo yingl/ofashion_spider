@@ -22,6 +22,8 @@ class Chloe(of_spider.Spider):
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'h1.productName > div > span.modelName')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver,'h1.productName .modelName.inner')
         if element:
             product['title'] = element.text.strip()
         else:

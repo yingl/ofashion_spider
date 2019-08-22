@@ -51,5 +51,6 @@ class Tiffany(of_spider.Spider):
         element = of_utils.find_element_by_css_selector(driver, 'div#drawerDescription > div > div')
         if not element:
             element = of_utils.find_element_by_css_selector(driver, 'p.product-description__container_long-desc')
-        product['detail'] = element.text.strip()
+        if element:    
+            product['detail'] = element.text.strip()
         return product
