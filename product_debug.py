@@ -7,34 +7,35 @@ import of_utils
 
 def parse_product(driver):
         product = of_spider.empty_product.copy()
-        #title
-        element = of_utils.find_element_by_css_selector(driver,'#product-content .product-name')
+        # title
+        element = of_utils.find_element_by_css_selector(driver, 'h1.page-title>span')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code N/A
-        element = of_utils.find_element_by_css_selector(driver,'#product-content .product-number span')
-        if element:
-            product['code'] = element.text.strip()
+        # element = of_utils.find_element_by_css_selector(driver,'.product-sku')
+        # if element:
+        #     product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '#product-content .product-price .price-sales')
+        element = of_utils.find_element_by_css_selector(driver, ".product-info-main .price-final_price .price")
         if element:
-             product['price_cny'] = of_utils.convert_price(element.text.strip())
+            product['price_euro_ita'] = int(float(element.text.strip().replace('£','').replace(',','')))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '#pdpMain .primary-image')
-        images = [element.get_attribute('src') for element in elements]
-        images = {}.fromkeys(images).keys()
+        elements = of_utils.find_elements_by_css_selector(driver, '.i-amphtml-slide-item img')
+        images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail N/A
-        # of_utils.sleep(100)
+        # element = of_utils.find_element_by_css_selector(driver,'.watch-info-item>p')
+        # if element:
+        #     product['detail'] = element.text.strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.follifollie.com.cn/cn-zh/fashionably-silver-%E7%B3%BB%E5%88%97%E7%88%B1%E5%BF%83%E9%A1%B9%E9%93%BE/3N15S073C.html?cgid=jewellery-necklaces')
+        driver.get('https://www.paulsmith.com/uk/men-s-tailored-fit-grey-herringbone-pattern-wool-blazer')
         product = parse_product(driver)
         print(product)
     except Exception as e:

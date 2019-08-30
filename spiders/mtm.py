@@ -5,8 +5,13 @@ import of_utils
 
 class Mtm(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, "#goods .product-list a") 
-        return [element.get_attribute('href').strip() for element in elements]  
+        urls = []
+        i = 0
+        elements = of_utils.find_elements_by_css_selector(driver, ".product_list .product_1 a") 
+        for element in elements:
+            urls.append('https://www.mtmskincare.com/cn/products/products/1?%s' % i)
+            i+=1
+        return urls  
 
     def parse_product(self, driver):
         elements = of_utils.find_elements_by_css_selector(driver,'.product_list .product_1 a')
