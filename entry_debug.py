@@ -33,14 +33,33 @@ def parse_entry(driver):
         #     else:
         #         break
         # return [element.get_attribute('href').strip() for element in elements]
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul.products>li>a')
-        return [element.get_attribute('href').strip() for element in elements]  
+
+
+        
+        products = []
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.table-cell > a')
+        for element in elements:
+            products.append(element.get_attribute('href').strip())
+
+        while True:     
+            page = of_utils.find_element_by_css_selector(driver, 'div.pagination > ul.clearfix > li > a.page-next')
+            if page:
+                page.click()
+                of_utils.sleep(4)
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.table-cell > a')
+                for element in elements:
+                    products.append(element.get_attribute('href').strip())
+            else:
+                break
+
+        return products
+
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.paulsmith.com/uk/mens/blazers')
+        driver.get('https://www.sandro-paris.cn/zh_CN/%E6%9C%8D%E8%A3%85/%E7%A7%8B%E5%86%AC%E6%96%B0%E5%93%81-2/')
         products = parse_entry(driver)
         print(products)
         print(len(products))

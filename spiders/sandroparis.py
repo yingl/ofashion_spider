@@ -9,14 +9,19 @@ class SandroParis(of_spider.Spider):
         elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.table-cell > a')
         for element in elements:
             products.append(element.get_attribute('href').strip())
-        pages = of_utils.find_elements_by_css_selector(driver, 'div.pagination > ul.clearfix > li > a')
-        for page in pages:
-            page.click()
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.table-cell > a')
-            for element in elements:
-                products.append(element.get_attribute('href').strip())
-        return products
 
+        while True:     
+            page = of_utils.find_element_by_css_selector(driver, 'div.pagination > ul.clearfix > li > a.page-next')
+            if page:
+                page.click()
+                of_utils.sleep(4)
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.product-image > div.table-cell > a')
+                for element in elements:
+                    products.append(element.get_attribute('href').strip())
+            else:
+                break
+        return products
+        
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title

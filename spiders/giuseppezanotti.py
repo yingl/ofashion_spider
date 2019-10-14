@@ -11,9 +11,9 @@ class GiuseppeZanotti(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'head > meta[name=description]')
+        element = of_utils.find_element_by_css_selector(driver, '.product-name h1.title')
         if element:
-            product['title'] = element.get_attribute('content').strip()
+            product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
