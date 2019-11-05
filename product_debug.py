@@ -8,31 +8,29 @@ import re
 def parse_product(driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.product-full__subline')
+        element = of_utils.find_element_by_css_selector(driver, '.product-template__details .product-details h1')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code N/A
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.product-full__content .product-sku-price__value')
+        element = of_utils.find_element_by_css_selector(driver, '.product-template__details .product-details__price')
         if element:
-            product['price_cny'] =  of_utils.convert_price(element.text.strip())
+            product['price_usd'] = int(float(element.text.strip().replace('$','')))
         # # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.product-full__image-carousel .product-full__carousel__slides .product-full__carousel__slide img')
-        images = ['https://www.lamer.com.cn'+element.get_attribute('data-src').strip() for element in elements]
-        product['images'] = ';'.join(images)
-        # # detail
-        element = of_utils.find_element_by_css_selector(driver, '.product-full__description .product-full__accordion__panel')
-        if element:
-            product['detail'] = element.text.strip()
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-image-gallery .VueCarousel-inner img')
+        if elements:
+            images = [element.get_attribute('src').strip() for element in elements]
+            product['images'] = ';'.join(images)
+        # # detail N/A
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.lamer.com.cn/product/5834/12343/creme-de-la-mer/creme-de-la-mer/moisturizer-for-dry-skin')
+        driver.get('https://www.victoriabeckhambeauty.com/products/satin-kajal-liner/?variant=black')
         product = parse_product(driver)
         print(product)
     except Exception as e:

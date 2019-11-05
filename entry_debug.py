@@ -4,6 +4,7 @@ sys.path.append('.')
 import of_utils
 from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
 from selenium.webdriver.common.keys import Keys
+import json
 
 def parse_entry(driver):
         # while True:
@@ -20,7 +21,7 @@ def parse_entry(driver):
         # of_utils.sleep(4)
         # product_count = 0
         # while True:
-        #     elements = of_utils.find_elements_by_css_selector(driver, '.prd-cell__content a')
+        #     elements = of_utils.find_elements_by_css_selector(driver, '#siteContent ul li a')
         #     if len(elements) > product_count:
         #         product_count = len(elements)
         #         action = ActionChains(driver).move_to_element(elements[-1])
@@ -34,8 +35,27 @@ def parse_entry(driver):
         #     else:
         #         break
         # return [element.get_attribute('href').strip() for element in elements]
-        elements = of_utils.find_elements_by_css_selector(driver, ".product-brief__extras-link") 
+
+        # elements = of_utils.find_elements_by_css_selector(driver, "article>div>a") 
+        # return [element.get_attribute('href').strip() for element in elements]  
+
+        # urls = []
+        # while True:
+        #     elements = of_utils.find_elements_by_css_selector(driver, 'ul.products-grid>li>div>a ')
+        #     if elements:
+        #         for ele in elements:
+        #             urls.append(ele.get_attribute('href').strip())
+        #     btn = of_utils.find_element_by_css_selector(driver,'.toolbar-bottom .pager .pages .i-next')
+        #     if btn:
+        #         driver.execute_script('arguments[0].click();', btn)
+        #         of_utils.sleep(4)
+        #     else:    
+        #         break
+        # return urls
+
+        elements = of_utils.find_elements_by_css_selector(driver, ".product-card-anchor") 
         return [element.get_attribute('href').strip() for element in elements]  
+
 
 
 
@@ -43,7 +63,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.lamer.com.cn/moisturizers/moisturizing-face-creams-face-lotions')
+        driver.get('https://www.victoriabeckhambeauty.com/eyes')
         products = parse_entry(driver)
         print(products)
         print(len(products))

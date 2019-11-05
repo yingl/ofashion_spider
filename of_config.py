@@ -187,4 +187,12 @@ mapping = {'store.tods.cn': 'tods',
            'www.balmain.com':'balmain',
            'www.victoriabeckhambeauty.com':'victoriabeckhambeauty',
            'www.longchamp.cn':'longchamp',
-           'www.lamer.com.cn':'lamer'}
+           'www.lamer.com.cn':'lamer',
+           'www.tissotwatches.cn':'tissotwatches',
+           'www.katespade.cn':'katespade',
+           'www.fentybeauty.com':'fentybeauty',
+           'www.berluti.com':'berluti',
+           'www.emiliopucci.com':'emiliopucci',
+           'cn.loropiana.com':'loropiana',
+           'www.nicholaskirkwood.com':'nicholaskirkwood',
+           'international.victoriabeckham.com':'victoriabeckham'}
