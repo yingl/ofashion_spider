@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 
 class Katespade(of_spider.Spider):
     def parse_entry(self, driver):
+        of_utils.sleep(6)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, '.product-grid .item-grid .picture a')

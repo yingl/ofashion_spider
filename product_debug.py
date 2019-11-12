@@ -8,29 +8,30 @@ import re
 def parse_product(driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.product-template__details .product-details h1')
+        element = of_utils.find_element_by_css_selector(driver, '#product-content .product-name')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code N/A
-        # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.product-template__details .product-details__price')
+        # price_usd
+        element = of_utils.find_element_by_css_selector(driver, '#product-content .product-price .price-sales')
         if element:
-            product['price_usd'] = int(float(element.text.strip().replace('$','')))
+            product['price_usd'] =  int(float(element.text.strip().replace('$','')))
         # # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.product-image-gallery .VueCarousel-inner img')
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-primary-image .slick-list .slick-track .item a')
         if elements:
-            images = [element.get_attribute('src').strip() for element in elements]
+            images = [element.get_attribute('href').strip() for element in elements]
+            images = {}.fromkeys(images).keys()
             product['images'] = ';'.join(images)
         # # detail N/A
         return product
-
+        
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.victoriabeckhambeauty.com/products/satin-kajal-liner/?variant=black')
+        driver.get('https://www.fentybeauty.com/bomb-baby-2-mini-lip-and-face-set/41661.html?cgid=tinsel-show')
         product = parse_product(driver)
         print(product)
     except Exception as e:
