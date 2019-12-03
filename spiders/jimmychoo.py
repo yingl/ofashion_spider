@@ -7,7 +7,7 @@ class JimmyChoo(of_spider.Spider):
     def parse_entry(self, driver):
         product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'ul#product-search-result-items > li > article.product-tile > div.js-product-image > a.js-producttile_link')
+            elements = of_utils.find_elements_by_css_selector(driver, 'ol.products>li>div>a')
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
@@ -17,22 +17,25 @@ class JimmyChoo(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        of_utils.sleep(4)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.product-name')
+        element = of_utils.find_element_by_css_selector(driver, '.product-information .product-name')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code N/A
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'span[itemprop=price]')
+        element = of_utils.find_element_by_css_selector(driver, '.product-information .product-price .p-price')
         if element:
-            price_text = element.get_attribute('content').strip()
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.pdp-gallery-item > a > img[itemprop=image]')
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-information .product-details-image-gallery img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail N/A
+        element = of_utils.find_element_by_css_selector(driver,'.product-information .product-short-description')
+        if element:
+            product['detail'] = element.text.strip()
         return product

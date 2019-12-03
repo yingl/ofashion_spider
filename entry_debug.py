@@ -69,29 +69,19 @@ def parse_entry(driver):
         #     else:
         #         break
         # return [element.get_attribute('href').strip() for element in elements]
+        # supreme
+        # elements = of_utils.find_elements_by_css_selector(driver, '#shop-scroller > li > a')
+        # return [element.get_attribute('href').strip() for element in elements]  
 
-        product_count = 0
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '.product-grid .item-grid .picture a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                action = ActionChains(driver).move_to_element(elements[-1])
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.send_keys(Keys.PAGE_DOWN)
-                action.perform()
-                of_utils.sleep(4)
-            else:
-                break
-        return [element.get_attribute('href').strip() for element in elements]
+        elements = of_utils.find_elements_by_css_selector(driver, 'a.overlay-link')
+        return [element.get_attribute('href').strip() for element in elements]  
+       
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.katespade.cn/handbags_shoulder-bags')
+        driver.get('https://www.tomford.com/men/ready-to-wear/evening/')
         products = parse_entry(driver)
         print(products)
         print(len(products))
