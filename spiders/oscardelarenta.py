@@ -39,7 +39,7 @@ class Oscardelarenta(of_spider.Spider):
             product['price_usd'] = int(float(element.text.strip().replace('$','').replace(',','')))
         # images
         elements = of_utils.find_elements_by_css_selector(driver, '#gal1 #owl-carousel-product-thumbs img')
-        images = [element.get_attribute('src').strip() for element in elements]
+        images = [element.get_attribute('src').strip().replace('/220','/1600') for element in elements]
         product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail N/A
         return product

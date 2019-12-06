@@ -25,29 +25,25 @@ class Hermes(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > h1')
+        element = of_utils.find_element_by_css_selector(driver, '.product-title')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'div.commerce-product-sku > p > span')
+        element = of_utils.find_element_by_css_selector(driver, '.product-sku')
         if element:
             product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > div.field-type-commerce-price')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > p.field-type-commerce-price')
+        element = of_utils.find_element_by_css_selector(driver, '.product-price')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul > li > button > span.product-images-navigation-image > img')
-        images = [element.get_attribute('src').strip().replace('-88-88', '-320-320') for element in elements]
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-image-gallery-container .gallery-img')
+        images = [element.get_attribute('src').strip().replace('-130-130', '-1100-1100') for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div#variant-info > h2.field-name-field-description > div')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.field-name-field-description > div.field-item.even')
-        product['detail'] = element.text.strip()
+        element = of_utils.find_element_by_css_selector(driver, '.product-attribute-font-description')
+        if element:
+            product['detail'] = element.text.strip()
         return product

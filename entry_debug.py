@@ -4,6 +4,7 @@ sys.path.append('.')
 import of_utils
 from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
 import json
 
 def parse_entry(driver):
@@ -73,15 +74,27 @@ def parse_entry(driver):
         # elements = of_utils.find_elements_by_css_selector(driver, '#shop-scroller > li > a')
         # return [element.get_attribute('href').strip() for element in elements]  
 
-        elements = of_utils.find_elements_by_css_selector(driver, 'a.overlay-link')
-        return [element.get_attribute('href').strip() for element in elements]  
-       
+        
+        urls = []
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, '.product-image-link')
+            if elements:
+                for ele in elements:
+                    urls.append(ele.get_attribute('href').strip())
+            btn = of_utils.find_element_by_css_selector(driver,'ul.page-numbers .next')
+            if btn:
+                driver.execute_script('arguments[0].click();', btn)
+                of_utils.sleep(4)
+            else:    
+                break
+        return urls
+
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.tomford.com/men/ready-to-wear/evening/')
+        driver.get('https://www.briston-watches.com/zh/categorie-produit/watches-zh/clublaster-classic-zh/	')
         products = parse_entry(driver)
         print(products)
         print(len(products))

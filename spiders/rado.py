@@ -8,19 +8,8 @@ import json
 
 class Rado(of_spider.Spider):
     def parse_entry(self, driver):
-        urls = []
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, '#gallery-grid-list .product-image>a')
-            if elements:
-                for ele in elements:
-                    urls.append(ele.get_attribute('href').strip())
-            btn = of_utils.find_element_by_css_selector(driver,'.pager .next')
-            if btn:
-                driver.execute_script('arguments[0].click();', btn)
-                of_utils.sleep(4)
-            else:    
-                break
-        return urls
+        elements = of_utils.find_elements_by_css_selector(driver, '.watch-box > div >a')
+        return [element.get_attribute('href').strip() for element in elements]  
 
     def parse_product(self, driver):
         driver.implicitly_wait(15)

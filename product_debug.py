@@ -7,36 +7,36 @@ import re
 import json
 
 def parse_product(driver):
-        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, "#details h1")
+        element = of_utils.find_element_by_css_selector(driver, '.product-full__title')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
-        # code N/A
-        # element = of_utils.find_element_by_css_selector(driver,'.product-detail .product-number > span')
-        # if element:
-        #     product['code'] = element.text.strip()
-        # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '#details .price span')
+
+        element = of_utils.find_element_by_css_selector(driver, '.product-full__sub-line')
         if element:
-            product['price_jpy'] = of_utils.convert_price(element.text.strip())
+            product['title'] = product['title'] + ' ' + element.text.strip()
+
+        # code N/A
+        # price_cny
+        element = of_utils.find_element_by_css_selector(driver, '.product-full-price__price .price')
+        if element:
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '#img-main')
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-full-image__photo--thumb')
         images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join({}.fromkeys(images).keys())
+        product['images'] = ';'.join(images)
         # detail N/A
         return product
-
 
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.supremenewyork.com/shop/pants/dav71keg3')
+        driver.get('https://www.bobbibrown.com.cn/product/21372/7791/conditioning-brush-cleanser')
         product = parse_product(driver)
         print(product)
     except Exception as e:
