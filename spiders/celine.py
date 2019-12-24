@@ -19,18 +19,17 @@ class Celine(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.cel-Product-infosName')
+        element = of_utils.find_element_by_css_selector(driver, 'h1.o-product__title')
         if element:
-            product['title'] = element.get_attribute('innerHTML').strip()
+            product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.product-price>p')
-        price_text = element.get_attribute('data-gtm-product-sales-price').strip()
-        if price_text:
-            product['price_cny'] = int(float(price_text))
+        element = of_utils.find_element_by_css_selector(driver, '.product-sales-price')
+        if element:
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.product-primary-image ul > li >button > img')
+        elements = of_utils.find_elements_by_css_selector(driver, '.m-thumb-carousel__item img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         return product

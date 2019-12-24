@@ -11,9 +11,9 @@ class Balenciaga(of_spider.Spider):
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.modelName.inner')
+        element = of_utils.find_element_by_css_selector(driver, '.modelName')
         if element:
-            product['title'] = element.get_attribute('innerHTML').strip()
+            product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
@@ -21,18 +21,14 @@ class Balenciaga(of_spider.Spider):
         if element:
             product['code'] = element.get_attribute('innerHTML').split(':')[-1].strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.priceUpdater > span.price > span.value')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.priceUpdater > div.itemPrice > span.price > span.value')
+        element = of_utils.find_element_by_css_selector(driver, '#item-buttons-wrapper .itemPrice .value')
         if element:
-            price_text = element.get_attribute('innerHTML').strip().replace(',', '')
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
         elements = of_utils.find_elements_by_css_selector(driver, 'ul.alternativeImages > li > img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.item-description-content > div > span.value')
-        text = element.get_attribute('innerHTML').strip().replace('• ', '')
-        product['detail'] = text
+        element = of_utils.find_element_by_css_selector(driver, '.item-description-text')
+        product['detail'] = element.text.strip()
         return product

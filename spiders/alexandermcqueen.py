@@ -7,7 +7,7 @@ class AlexanderMcqueen(of_spider.Spider):
     def parse_entry(self, driver):
         product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-list > article.item > a')
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-list > article > a')
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
