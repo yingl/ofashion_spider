@@ -75,15 +75,31 @@ def parse_entry(driver):
         # return [element.get_attribute('href').strip() for element in elements]  
 
         
-        product_count = 0
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-list > article > a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
-                of_utils.sleep(4)
-            else:
-                break
+        # 手袋
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.fs-products-grid__product.fs-gridelement > div.fs-products-grid__product__illu > a')
+        if not elements:
+            # 手袋2
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.fs-products-grid > div.fs-products-grid__product.fs-gridelement > div.fs-products-grid__product__wrapper > a')
+        if not elements:
+            # 彩妆
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.fnb_col-wd6.fnb_product-img > a') 
+        # 手表
+        if not elements:
+            load_more = of_utils.find_element_by_css_selector(driver, 'div.pd-action-btns > button[role=button]')
+            if not load_more: # 戒指
+                load_more = of_utils.find_element_by_css_selector(driver, 'div.display-all > a')
+            if load_more:
+                driver.execute_script('arguments[0].click();', load_more)
+            of_utils.sleep(5)
+            product_count = 0
+            while True:
+                elements = of_utils.find_elements_by_css_selector(driver, 'div.products > div.row > div > ul > li > div.product-item-wrapper > a')
+                if len(elements) > product_count:
+                    product_count = len(elements)
+                    driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+                    of_utils.sleep(4)
+                else:
+                    break
         return [element.get_attribute('href').strip() for element in elements]
 
 
@@ -91,7 +107,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://store.alexandermcqueen.cn/cn/alexandermcqueen/online/%E5%A5%B3%E5%A3%AB/%E4%B8%8A%E8%A1%A3%E5%8F%8A%E8%A1%AC%E8%A1%AB')
+        driver.get('https://www.chanel.com/zh_CN/fashion/products/costume-jewelry/page-6.html')
         products = parse_entry(driver)
         print(products)
         print(len(products))

@@ -61,12 +61,12 @@ class Chanel(of_spider.Spider):
             product['price_cny'] = of_utils.convert_price(price_text)
         # images
         images = []
+        elements = of_utils.find_elements_by_css_selector(driver, '.fs-productsheet__slideshow--desktop > ul > li picture ')
         
-        elements = of_utils.find_elements_by_css_selector(driver, 'li.fs-productsheet__zoom__content-li > div.fs-productsheet__zoom__sizeArea > div > div > picture')
         if elements:
             for element in elements:
                 _element = of_utils.find_element_by_css_selector(element, 'source')
-                images.append(_element.get_attribute('data-srcset').strip())
+                images.append(_element.get_attribute('srcset').strip())
         else:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.product-images figure>a>img') # 手表
             if elements:

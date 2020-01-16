@@ -9,34 +9,59 @@ import json
 def parse_product(driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1 > span.modelName')
+        element = of_utils.find_element_by_css_selector(driver, 'span.fs-productsheet__title') # 手袋
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'span.fnb_pdp-subtitle') # 彩妆
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, '#product-details dl dd:nth-of-type(1)') # 手表
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'div.modelFabricColor > span.value')
+        element = of_utils.find_element_by_css_selector(driver, 'div.fs-productsheet__ref')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, '#product-details dl dd:nth-of-type(2)') # 手表
         if element:
-            product['code'] = element.text.strip()
+            product['code'] = element.text.split(':')[-1].strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'span.price > span.value')
+        element = of_utils.find_element_by_css_selector(driver, 'p.fnb_pdp-price')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'span.fs-productsheet__price_value.fs-price__value')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-price') # 手表
         if element:
-            price_text = element.get_attribute('innerHTML').strip().replace(',', '')
-            product['price_cny'] = int(float(price_text))
+            price_text = element.text.strip()[1:].strip().replace(',', '').replace('*', '') # 去掉开头的¥
+            product['price_cny'] = of_utils.convert_price(price_text)
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.productImages > ul.alternativeImages > li > img')
-        images = [element.get_attribute('src').strip() for element in elements]
+        images = []
+        elements = of_utils.find_elements_by_css_selector(driver, '.fs-productsheet__slideshow--desktop > ul > li picture ')
+        
+        if elements:
+            for element in elements:
+                _element = of_utils.find_element_by_css_selector(element, 'source')
+                images.append(_element.get_attribute('srcset').strip())
+        else:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-images figure>a>img') # 手表
+            if elements:
+                for element in elements:
+                    images.append(element.get_attribute('src').strip())        
+            else:
+                element = of_utils.find_element_by_css_selector(driver, 'a.fnb_thumbnail-img > img')
+                images.append(element.get_attribute('src').strip())
         product['images'] = ';'.join(images)
+
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.productInfoContainer > div.descriptionsContainer > div.attributesUpdater > span.value')
-        product['detail'] = element.text.strip()
+        element = of_utils.find_element_by_css_selector(driver, 'div.fnb_description-left  > div > div.row > div > p')
+        if element:
+            product['detail'] = element.text.strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://store.alexandermcqueen.cn/cn/alexandermcqueen/%E4%B8%8A%E8%A1%A3_cod12023042uv.html#dept=w_tops_shirts')
+        driver.get('https://www.chanel.com/zh_CN/fashion/p/cjy/ab3336b02392/ab3336b02392n5958/long-necklace-metal-glass-pearls-strass-silver-pearly-white-crystal.html')
         product = parse_product(driver)
         print(product)
     except Exception as e:
