@@ -86,3 +86,15 @@ def convert_price(price):
     except Exception as e:
         print(e)
         return 0
+
+def find_element_by_xpath(element, selector):
+    try:
+        return element.find_element_by_xpath(selector)
+    except:
+        return None
+
+def find_elements_by_xpath(element, selector):
+    try:
+        return element.find_elements_by_xpath(selector)
+    except:
+        return []

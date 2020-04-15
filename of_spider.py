@@ -27,6 +27,7 @@ class Spider:
             self.write_products(brand, url, source_id, pid, status, result)
         except Exception as e:
             self.logger.exception(traceback.format_exc())
+            print(e)
 
     @retry(of_errors.ImagesError,tries=3,delay=2,jitter=1)
     def get_product(self, brand, source_id, pid, url):

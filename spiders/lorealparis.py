@@ -5,7 +5,7 @@ import of_utils
 
 class Lorealparis(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, '.product-list ul li a')
+        elements = of_utils.find_elements_by_css_selector(driver, '.product-list > ul > li > div.product-img> a')
         return [element.get_attribute('href').strip() for element in elements if 'tmall' not in element.get_attribute('href').strip()]
 
     def parse_product(self, driver):

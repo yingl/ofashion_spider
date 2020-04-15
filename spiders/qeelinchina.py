@@ -3,7 +3,7 @@ sys.path.append('../')
 import of_spider
 import of_utils
 
-class Lorealparis(of_spider.Spider):
+class Qeelinchina(of_spider.Spider):
     def parse_entry(self, driver):
         elements = of_utils.find_elements_by_css_selector(driver, '.products-list .ql-product-block')
         return ['https://qeelinchina.com'+element.get_attribute('data-ql-url').strip() for element in elements]

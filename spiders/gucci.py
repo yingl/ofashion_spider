@@ -14,6 +14,7 @@ class Gucci(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'h1.spice-product-name')

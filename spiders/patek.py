@@ -5,13 +5,13 @@ import of_utils
 
 class Patek(of_spider.Spider):
     def parse_entry(self, driver):
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul.products > li > a')
+        elements = of_utils.find_elements_by_css_selector(driver, '.article_list_container>.article>a')
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1[dir=ltr] > span.complication')
+        element = of_utils.find_element_by_css_selector(driver, 'h1[dir=ltr] > span.reference')
         if element:
             product['title'] = element.text.strip()
         else:
