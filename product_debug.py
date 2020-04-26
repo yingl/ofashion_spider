@@ -10,25 +10,25 @@ def parse_product(driver):
         driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_xpath(driver,'//h1[@class="product-name-title"]')
+        element = of_utils.find_element_by_xpath(driver,'//section[@class="section-product_resume main-section"]/h1')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_xpath(driver,'//li[@class="product-id"]')
+        element = of_utils.find_element_by_xpath(driver,'//section[@class="section-product_resume main-section"]/span')
         if element:
             product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_xpath(driver,'//div[@class="primary-category-and-price"]//span[@class="sales "]')
-        if element:
-            product['price_cny'] = of_utils.convert_price(element.text.strip())
+        # element = of_utils.find_element_by_xpath(driver,'//span[@itemprop="price"]')
+        # if element:
+        #     product['price_cny'] = of_utils.convert_price(element.get_attribute('content'))
         # images
-        elements = of_utils.find_elements_by_xpath(driver,'//div[@class="primary-images"]//div[@class="swiper-wrapper"]//img')
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="product_hero"]/img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join({}.fromkeys(images).keys())
-        # detail N/A
-        element = of_utils.find_element_by_xpath(driver,'//div[@class="info-and-care product-attributes"]/ul')
+        # detail
+        element = of_utils.find_element_by_xpath(driver,'//section[@class="section-product_resume main-section"]/p')
         if element:
             product['detail'] = element.text.strip()
         return product
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.sergiorossi.com/cn-en/boots-black-sergio/A85412MCAZ01310.1000.html')
+        driver.get('https://www.zenith-watches.com/zh_zh/defy-classic-midnight-3.html')
         product = parse_product(driver)
         print(product)
     except Exception as e:

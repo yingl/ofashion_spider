@@ -74,15 +74,31 @@ def parse_entry(driver):
         # elements = of_utils.find_elements_by_css_selector(driver, '#shop-scroller > li > a')
         # return [element.get_attribute('href').strip() for element in elements]  
 
-        driver.implicitly_wait(15)
-        elements = of_utils.find_elements_by_xpath(driver, '//a[@class="pdp-link image-link"]')
-        return [element.get_attribute('href').strip() for element in elements]
 
+        # driver.implicitly_wait(10)
+
+        # while True:
+        #     loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="loadMore"]/button')
+        #     if loadMore:
+        #         driver.execute_script('arguments[0].click();', loadMore)
+        #         of_utils.sleep(5)
+        #     else:
+        #         break    
+
+        # elements = of_utils.find_elements_by_xpath(driver,'//div[@class="blankDiv"]/a')
+        # return [element.get_attribute('href').strip() for element in elements]
+
+
+        of_utils.sleep(5)
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="swiper-wrapper"]/div/div/a') 
+        return [element.get_attribute('href').strip() for element in elements]  
+
+        
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.sergiorossi.com/cn-en/shoes/boots/')
+        driver.get('https://www.zenith-watches.com/zh_zh/collections/defy.html')
         products = parse_entry(driver)
         print(products)
         print(len(products))
