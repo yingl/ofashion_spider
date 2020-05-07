@@ -88,17 +88,16 @@ def parse_entry(driver):
         # elements = of_utils.find_elements_by_xpath(driver,'//div[@class="blankDiv"]/a')
         # return [element.get_attribute('href').strip() for element in elements]
 
-
-        of_utils.sleep(5)
-        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="swiper-wrapper"]/div/div/a') 
-        return [element.get_attribute('href').strip() for element in elements]  
+        driver.implicitly_wait(15)
+        elements = of_utils.find_elements_by_xpath(driver, '//a[@class="rcms_seeproduct"]')            
+        return [element.get_attribute('href').strip() for element in elements]
 
         
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.zenith-watches.com/zh_zh/collections/defy.html')
+        driver.get('https://www.vacheron-constantin.cn/cn/%E6%89%8B%E8%A1%A8/traditionnelle%E4%BC%A0%E8%A2%AD%E7%B3%BB%E5%88%97.html#tab=0')
         products = parse_entry(driver)
         print(products)
         print(len(products))

@@ -23,27 +23,37 @@ class Hermes(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.product-title')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="variant-info"]/h1')
+        if not element:
+            element = of_utils.find_element_by_xpath(driver, '//p[@class="product-title"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, '.product-sku')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="product-detail"]//div[@class="commerce-product-sku"]/p/span')
         if element:
             product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.product-price')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="variant-info"]/p[@class="field-type-commerce-price"]')
+        if not element:
+            element = of_utils.find_element_by_xpath(driver, '//p[@class="product-price"]')
         if element:
              product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.product-image-gallery-container .gallery-img')
-        images = [element.get_attribute('src').strip().replace('-130-130', '-1100-1100') for element in elements]
-        product['images'] = ';'.join(images)
+        elements = of_utils.find_elements_by_xpath(driver, '//picture[@class="product-item-picture"]/img')
+        if not elements:
+            elements = of_utils.find_elements_by_xpath(driver, '//img[contains(@class,"main-product-image")]')
+        if elements:
+            images = [element.get_attribute('src').strip() for element in elements if 'data:image/gif' not in element.get_attribute('src')]
+            product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, '.product-attribute-font-description')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="field-name-field-description"]/div/p')
+        if not element:
+            element = of_utils.find_element_by_xpath(driver, '//p[@class="product-attribute-font-description"]')
         if element:
             product['detail'] = element.text.strip()
         return product

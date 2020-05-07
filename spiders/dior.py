@@ -11,6 +11,7 @@ class Dior(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'h1.title-with-level > span')
@@ -21,6 +22,9 @@ class Dior(of_spider.Spider):
         else:
             raise Exception('Title not found')
         # code Deal with detail
+        element = of_utils.find_element_by_css_selector(driver,'p.product-titles-ref')
+        if element:
+            product['code'] = element.text.strip().replace('编号: ','')
         # price_cny
         element = of_utils.find_element_by_css_selector(driver, 'div.variation-option-price')
         if not element:

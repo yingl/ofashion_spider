@@ -21,55 +21,28 @@ class LouisVuitton(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
         
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'div#productName > h1')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock h1#productName')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'h1.fc-product-title')
+        element =  of_utils.find_element_by_xpath(driver, '//h1[@id="productName"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'div.sku')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'span.sku')
+        element = of_utils.find_element_by_xpath(driver, '//span[@class="sku"]')
         if element:
             product['code'] = element.text.strip()
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'td.priceValue')
-        if not element:
-            element =  of_utils.find_element_by_css_selector(driver, 'div#infoProductBlock div.priceBlock div.priceValue')
-        if not element:
-            element =  of_utils.find_element_by_css_selector(driver, '.fc-price-container')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="priceValue"]')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        images = []
-        elements = of_utils.find_elements_by_css_selector(driver, '.thumbnails ul li picture source')
-        if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, '#productMainImage source')
-        if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, '.fc-model-container .fc-display-images>div')
-
-        if elements:
-            for ele in elements:
-                img = ele.get_attribute('srcset')
-                if img:
-                    img = ele.get_attribute('srcset').strip().split(',')[0]
-                if not img:
-                    img = ele.get_attribute('data-src').strip()
-                if img:
-                    images.append(img)
-        # images = [element.get_attribute('srcset').strip().split(',')[0] for element in elements]
-        product['images'] = ';'.join(images)
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@id="productSheetSlideshow"]/div/div/ul/li/button/picture/source')
+        images = [element.get_attribute('srcset').split(',')[0].replace(' 1600w','').replace(' 1280w','').replace(' 1024w','').replace(' 640w','').replace(' 480w','').replace(' 320w','').replace(' 240w','') for element in elements]
+        product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.productDescription[itemprop=description]')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div#productDescription')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="productDescription"]')
         if element:
             product['detail'] = element.text.strip()
         return product
