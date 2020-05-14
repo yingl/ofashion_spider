@@ -88,8 +88,23 @@ def parse_entry(driver):
         # elements = of_utils.find_elements_by_xpath(driver,'//div[@class="blankDiv"]/a')
         # return [element.get_attribute('href').strip() for element in elements]
 
-        driver.implicitly_wait(15)
-        elements = of_utils.find_elements_by_xpath(driver, '//a[@class="rcms_seeproduct"]')            
+        
+        driver.implicitly_wait(10)
+        product_count = 0
+        while True:
+            elements = of_utils.find_elements_by_css_selector(driver, 'div.productItemContainer > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'li.productItemContainer > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'li.productItem > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'li.lookItem > a')
+            if len(elements) > product_count:
+                product_count = len(elements)
+                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+                of_utils.sleep(4)
+            else:
+                break
         return [element.get_attribute('href').strip() for element in elements]
 
         
@@ -97,7 +112,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.vacheron-constantin.cn/cn/%E6%89%8B%E8%A1%A8/traditionnelle%E4%BC%A0%E8%A2%AD%E7%B3%BB%E5%88%97.html#tab=0')
+        driver.get('https://www.louisvuitton.cn/zhs-cn/women/ready-to-wear/must-have-and-essentials/_/N-yefd21')
         products = parse_entry(driver)
         print(products)
         print(len(products))

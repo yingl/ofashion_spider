@@ -31,6 +31,8 @@ class Dior(of_spider.Spider):
             element = of_utils.find_element_by_css_selector(driver, 'div.product-actions>span')
         if not element:
             element = of_utils.find_element_by_css_selector(driver, 'span.variation-option-price')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.product-actions__price .price-line')
         if element:
             price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
             product['price_cny'] = of_utils.convert_price(price_text)

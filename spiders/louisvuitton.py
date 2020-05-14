@@ -5,6 +5,7 @@ import of_utils
 
 class LouisVuitton(of_spider.Spider):
     def parse_entry(self, driver):
+        driver.implicitly_wait(10)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.productItemContainer > a')
@@ -12,6 +13,8 @@ class LouisVuitton(of_spider.Spider):
                 elements = of_utils.find_elements_by_css_selector(driver, 'li.productItemContainer > a')
             if not elements:
                 elements = of_utils.find_elements_by_css_selector(driver, 'li.productItem > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'li.lookItem > a')
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')

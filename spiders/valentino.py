@@ -22,6 +22,7 @@ class Valentino(of_spider.Spider):
 
     def parse_product(self, driver):
         driver.implicitly_wait(15)
+        of_utils.sleep(5)
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, ".detail-title")

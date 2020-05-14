@@ -8,25 +8,23 @@ import json
 
 def parse_product(driver):
         driver.implicitly_wait(15)
+        of_utils.sleep(5)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_xpath(driver,'//div[@class="detail__title"]/h1')
+        element = of_utils.find_element_by_css_selector(driver, ".detail-title")
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
-        # code
-        element = of_utils.find_element_by_xpath(driver,'//div[@class="detail__reference"]/span')
-        if element:
-            product['code'] = element.text.strip().replace('编号','')
+        # code N/A
         # price_cny
-        element = of_utils.find_element_by_xpath(driver, '//div[@class="detail__price"]/h3')
+        element = of_utils.find_element_by_css_selector(driver, '.detail-price > span')
         if element:
             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_xpath(driver, '//img[@class="img-margin-fix_pdp lazyautosizes lazyloaded"]')
+        elements = of_utils.find_elements_by_css_selector(driver, '.prod-media-mainImg > img')
         images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join(images)
+        product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail N/A
         return product
 
@@ -34,7 +32,7 @@ if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.vacheron-constantin.cn/cn/%E6%89%8B%E8%A1%A8/traditionnelle%E4%BC%A0%E8%A2%AD%E7%B3%BB%E5%88%97/traditionnelle%E4%BC%A0%E8%A2%AD%E7%B3%BB%E5%88%97%E8%87%AA%E5%8A%A8%E4%B8%8A%E9%93%BE-87172-000r-b690.html')
+        driver.get('https://www.valentino.com.cn/zh-cn/RW2B0B55NAPI16?&key=plpFilterParam')
         product = parse_product(driver)
         print(product)
     except Exception as e:
