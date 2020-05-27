@@ -20,22 +20,19 @@ class Etude(of_spider.Spider):
                 break    
         elements = of_utils.find_elements_by_xpath(driver,'//div[@class="product_cell_thumbBox"]') 
         for e in elements:
-            urls.append('www.etude.cn'+e.get_attribute('onclick').strip().replace('window.open(\'','').replace('\')',''))
+            urls.append('http://www.etude.cn'+e.get_attribute('onclick').strip().replace('window.open(\'','').replace('\')',''))
         return urls
 
     def parse_product(self, driver):
         driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_xpath(driver,'//div[contains(@class,"etude_detail_good_title")]')
+        element = of_utils.find_element_by_xpath(driver,'//div[@class="etude_detail_good_title select-text"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        arr = driver.current_url.split('prdCode=')
-        if len(arr) > 1:
-            product['code'] = arr[1]
         # price_cny
         element = of_utils.find_element_by_xpath(driver,'//div[contains(@class,"etude-product-detail")]//span[contains(@class,"price-new")]')
         if element:

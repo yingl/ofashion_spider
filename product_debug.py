@@ -8,31 +8,36 @@ import json
 
 def parse_product(driver):
         driver.implicitly_wait(15)
-        of_utils.sleep(5)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, ".detail-title")
+        element = of_utils.find_element_by_xpath(driver,'//h1[@class="product-detail_name"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
-        # code N/A
-        # price_cny
-        element = of_utils.find_element_by_css_selector(driver, '.detail-price > span')
+        # code
+        element = of_utils.find_element_by_xpath(driver,'//p[contains(@class,"itemNum")]')
         if element:
-            product['price_cny'] = of_utils.convert_price(element.text.strip())
+            product['code'] = element.text.strip().replace('ITEM: ','')
+        # price_cny
+        element = of_utils.find_element_by_xpath(driver,'//div[@class="product-detail_price"]')
+        if element:
+            product['price_cny'] = of_utils.convert_price(element.text.strip().replace('CN¥‌',''))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, '.prod-media-mainImg > img')
+        elements = of_utils.find_elements_by_xpath(driver,'//img[@class="product-imagery_picture-image"]')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail N/A
+        element = of_utils.find_element_by_xpath(driver,'//div[contains(@class,"description")]/p')
+        if element:
+            product['detail'] = element.text.strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.valentino.com.cn/zh-cn/RW2B0B55NAPI16?&key=plpFilterParam')
+        driver.get('https://pinkshirtmaker.com/product/loose-silhouette-weekend-large-check-twill-button-cuff-shirt/10700089B2H')
         product = parse_product(driver)
         print(product)
     except Exception as e:
