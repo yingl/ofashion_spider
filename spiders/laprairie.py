@@ -9,11 +9,12 @@ class Laprairie(of_spider.Spider):
         return [ele.get_attribute('href').strip() for ele in eles]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, '.product-hero__main-text span[itemprop=name]')
+        element = of_utils.find_element_by_xpath(driver, '//h2[@class="product-hero__name title-big title-big--thin"]')
         if element:
-            product['title'] = element.text.strip().replace('\n',' ')
+            product['title'] = element.get_attribute('innerHTML').strip()
         else:
             raise Exception('Title not found')
         # code N/A

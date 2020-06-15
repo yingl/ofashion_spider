@@ -10,34 +10,35 @@ def parse_product(driver):
         driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_xpath(driver,'//h1[@class="product-detail_name"]')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="c-product-details"]//h1[@class="c-title"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_xpath(driver,'//p[contains(@class,"itemNum")]')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="c-cod"]')
         if element:
-            product['code'] = element.text.strip().replace('ITEM: ','')
+            product['code'] = element.text.replace('货号','').strip()
         # price_cny
-        element = of_utils.find_element_by_xpath(driver,'//div[@class="product-detail_price"]')
+        element = of_utils.find_element_by_xpath(driver, '//span[@class="c-realprice"]')
         if element:
-            product['price_cny'] = of_utils.convert_price(element.text.strip().replace('CN¥‌',''))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_xpath(driver,'//img[@class="product-imagery_picture-image"]')
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="c-vertical-scroll js-init-slick"]/div[@class="c-slide"]/span/img')
         images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join({}.fromkeys(images).keys())
-        # detail N/A
-        element = of_utils.find_element_by_xpath(driver,'//div[contains(@class,"description")]/p')
+        product['images'] = ';'.join(images)
+        # detail
+        element = of_utils.find_element_by_xpath(driver,'//h2[@class="c-description"]')
         if element:
             product['detail'] = element.text.strip()
+            # product['detail'] = element.get_attribute('innerHTML').strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://pinkshirtmaker.com/product/loose-silhouette-weekend-large-check-twill-button-cuff-shirt/10700089B2H')
+        driver.get('https://www.miumiu.com/cn/zh/bags/clutches/products.miu_delice%E7%9A%AE%E9%9D%A9%E6%89%8B%E8%A2%8B.5BP001_N88_F0770_V_IOO.html')
         product = parse_product(driver)
         print(product)
     except Exception as e:
@@ -59,4 +60,9 @@ if __name__ == '__main__':
     # a = '//player.louisvuitton.com/media/img/poster/video/640x1280/1324/1324007.jpg 1600w,//player.louisvuitton.com/media/img/poster/video/640x1280/1324/1324007.jpg 1280w,//player.louisvuitton.com/media/img/poster/video/640x1280/1324/1324007.jpg 1024w,//player.louisvuitton.com/media/img/poster/video/640x1280/1324/1324007.jpg 640w,//player.louisvuitton.com/media/img/poster/video/640x1280/1324/1324007.jpg 480w,//player.louisvuitton.com/media/img/poster/video/320x640/1324/1324007.jpg 320w,//player.louisvuitton.com/media/img/poster/video/320x640/1324/1324007.jpg 240w'
 
     # b = a.split(',')[0].replace(' 1600w','').replace(' 1280w','').replace(' 1024w','').replace(' 640w','').replace(' 480w','').replace(' 320w','').replace(' 240w','')
+    # print(b)
+
+    # a = '饰26颗珍珠母贝纽扣（可解开前几个纽扣穿着）<br><br>颜色：beige &amp; purple<br>商品编号：CHC20URO3233095U'
+    # b = a.find('商品编号33')
+    # c = a[a.find('商品编号33')+5:] if a.find('商品编号33') >= 0 else ''
     # print(b)

@@ -75,36 +75,37 @@ def parse_entry(driver):
         # return [element.get_attribute('href').strip() for element in elements]  
 
 
-        # driver.implicitly_wait(10)
-
+        # driver.implicitly_wait(15)
         # while True:
-        #     loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="loadMore"]/button')
+        #     loadMore = of_utils.find_element_by_xpath(driver,'//pink-listing-view-more/a/button')
         #     if loadMore:
         #         driver.execute_script('arguments[0].click();', loadMore)
         #         of_utils.sleep(5)
         #     else:
         #         break    
 
-        # elements = of_utils.find_elements_by_xpath(driver,'//div[@class="blankDiv"]/a')
+        # elements = of_utils.find_elements_by_xpath(driver,'//a[@class="product-result_image-link js-gtm-click"]')
         # return [element.get_attribute('href').strip() for element in elements]
 
         driver.implicitly_wait(15)
         while True:
-            loadMore = of_utils.find_element_by_xpath(driver,'//pink-listing-view-more/a/button')
-            if loadMore:
+            loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="o-viewMore"]')
+            if loadMore and 'display: none;' not in loadMore.get_attribute('style'):
+                loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="o-viewMore"]/a')
                 driver.execute_script('arguments[0].click();', loadMore)
                 of_utils.sleep(5)
             else:
                 break    
 
-        elements = of_utils.find_elements_by_xpath(driver,'//a[@class="product-result_image-link js-gtm-click"]')
+        elements = of_utils.find_elements_by_xpath(driver,'//a[@class="js-product-link"]')
         return [element.get_attribute('href').strip() for element in elements]
+
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://pinkshirtmaker.com/category/shirts')
+        driver.get('https://www.miumiu.com/cn/zh/bags/clutches.html')
         products = parse_entry(driver)
         print(products)
         print(len(products))

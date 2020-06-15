@@ -46,14 +46,15 @@ class Dior(of_spider.Spider):
         product['images'] = ';'.join(images)
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'div.product-tab-content > div.product-tab-html')
-        texts =element.text.strip().split('\n')
-        detail_texts = []
-        for text in texts:
-            if text:
-                if text.startswith('编号'):
-                    code = text.split(':')[-1].strip()
-                    product['code'] = code
-                else:
-                    detail_texts.append(text)
-        product['detail'] = '\n'.join(detail_texts)
+        if element:
+            texts =element.text.strip().split('\n')
+            detail_texts = []
+            for text in texts:
+                if text:
+                    if text.startswith('编号'):
+                        code = text.split(':')[-1].strip()
+                        product['code'] = code
+                    else:
+                        detail_texts.append(text)
+            product['detail'] = '\n'.join(detail_texts)
         return product

@@ -9,9 +9,12 @@ class Kanebo(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'div.g-Text > p > span.opt-fontsize--l')
+        element = of_utils.find_element_by_css_selector(driver, 'div.g-Text > p > span.opt-fontsize--l > span')
+        if not element:
+            element = of_utils.find_element_by_css_selector(driver, 'div.g-Text > p > span.opt-fontsize--l')
         if element:
             product['title'] = element.text.strip()
         else:
@@ -23,5 +26,6 @@ class Kanebo(of_spider.Spider):
         product['images'] = element.get_attribute('src').strip()
         # detail
         element = of_utils.find_element_by_css_selector(driver, 'p.cmn-richtext > span > span.opt-fontfamily--02')
-        product['detail'] = element.text.strip()
+        if element:
+            product['detail'] = element.text.strip()
         return product

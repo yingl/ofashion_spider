@@ -19,54 +19,49 @@ class Ysl(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
-        of_utils.sleep(5) # Sleep for loading
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
-        # title
-        element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > div > span.modelName')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.product-tit > h1')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > h1.productName > span > span > div > span')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver,'.productName')    
-        if element:
-            product['title'] = element.text.strip()
-            if not product['title']:
-                product['title'] = element.get_attribute('innerHTML')
-        else:
-            raise Exception('Title not found')
-        # code N/A
-        # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.productInfo > div#itemPrice')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.product-handle > div.product-price')
-        if element:
-            price_text = element.text.strip()
-            if price_text:
-                price_text = price_text[1:].strip().replace(',', '') # 去掉开头的¥
-                product['price_cny'] = int(float(price_text))
-        # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.thumb_wrapper > ul.alternativeImages > li')
-        if elements:
-            for i in range(len(elements)):
-                driver.execute_script('arguments[0].click();', elements[i])
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.itempage-images-content > ul.alternativeImages > li > img')
-        if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.thumbnails-box > div > ul.swiper-wrapper > li > img')
-            images = []
-            for element in elements:
-                img = element.get_attribute('src').strip()
-                img = img.replace('110X110', '500X500')
-                images.append(img)
-        else:
-            images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join(images)
-        # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.description > div.descriptionContent')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver, 'div.product-description > p')
-            text = element.text.split('\n')[0].strip()
-        else:
-            text = element.text.strip()
-        product['detail'] = text
+        if 'www.ysl.com' in driver.current_url:
+            ele = of_utils.find_element_by_xpath(driver,'//meta[@property="og:title"]')
+            if ele:
+                product['title'] = ele.get_attribute('content')
+            else:
+                raise Exception('Title not found')
+            
+            ele = of_utils.find_element_by_xpath(driver,'//span[@class="modelFabricColor"]//span[@class="value"]')
+            if ele:
+                product['code'] = ele.get_attribute('innerHTML').strip()
+
+            ele = of_utils.find_element_by_xpath(driver,'//div[@id="itemPrice"]') 
+            if ele:
+                txt = ele.get_attribute('innerHTML').strip()
+                product['price_cny'] = of_utils.convert_price(txt[(txt.find('¥')+1):])
+
+            eles = of_utils.find_elements_by_xpath(driver,'//ul[@class="alternativeImages"]//li//img[@class="mainImage"]')
+            images = [e.get_attribute('data-origin').strip() if e.get_attribute('data-origin') else e.get_attribute('src')  for e in eles]
+            product['images'] = ';'.join({}.fromkeys(images).keys())
+
+        elif 'www.yslbeautycn.com' in driver.current_url:
+            ele = of_utils.find_element_by_xpath(driver,'//div[@class="product-top"]//div[@class="product-tit"]//h1')
+            if ele:
+                product['title'] = ele.text.strip()
+            else:
+                raise Exception('Title not found')
+            
+            ele = of_utils.find_element_by_xpath(driver,'input[@id="hide-currentItemCode"]')
+            if ele:
+                product['code'] = ele.get_attribute('value')
+
+            ele = of_utils.find_element_by_xpath(driver,'//div[@class="detail-item is-active current-item"]//p[@class="product-price"]')
+            if ele:
+                product['price_cny'] = of_utils.convert_price(ele.text.strip())
+
+            eles = of_utils.find_elements_by_xpath(driver,'//div[@class="swiper-container e-main-scroll swiper-container-horizontal swiper-container-fade"]//div[@class="swiper-wrapper"]//img')
+            images = [e.get_attribute('src').strip() for e in eles]
+            product['images'] = ';'.join({}.fromkeys(images).keys())
+
+            ele = of_utils.find_element_by_xpath(driver,'//div[@class="product-description none-sm"]/p')
+            if ele:
+                product['detail'] = ele.text.strip()
+
         return product

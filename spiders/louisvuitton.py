@@ -28,6 +28,8 @@ class LouisVuitton(of_spider.Spider):
         product = of_spider.empty_product.copy()
         # title
         element =  of_utils.find_element_by_xpath(driver, '//h1[@id="productName"]')
+        if not element:
+            element = of_utils.find_element_by_xpath(driver,'//h1[@class="fc-product-title"]')
         if element:
             product['title'] = element.text.strip()
         else:
@@ -38,12 +40,20 @@ class LouisVuitton(of_spider.Spider):
             product['code'] = element.text.strip()
         # price_cny
         element = of_utils.find_element_by_xpath(driver, '//div[@class="priceValue"]')
+        if not element:
+            element = of_utils.find_element_by_xpath(driver,'//span[@class="fc-price-container fc-show"]')
         if element:
             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
         elements = of_utils.find_elements_by_xpath(driver, '//div[@id="productSheetSlideshow"]/div/div/ul/li/button/picture/source')
-        images = [element.get_attribute('srcset').split(',')[0].replace(' 1600w','').replace(' 1280w','').replace(' 1024w','').replace(' 640w','').replace(' 480w','').replace(' 320w','').replace(' 240w','') for element in elements]
-        product['images'] = ';'.join({}.fromkeys(images).keys())
+        if len(elements) > 0:
+            images = [element.get_attribute('srcset').split(',')[0].replace(' 1600w','').replace(' 1280w','').replace(' 1024w','').replace(' 640w','').replace(' 480w','').replace(' 320w','').replace(' 240w','') for element in elements]
+            product['images'] = ';'.join({}.fromkeys(images).keys())
+        else:
+            elements = of_utils.find_elements_by_xpath(driver,'//div[@class="fc-model-container"]//div[@class="carousel-active fc-display-image carousel-key-Front"]/img')
+            if len(elements) > 0:
+                images = [element.get_attribute('src') for element in elements]
+                product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail
         element = of_utils.find_element_by_xpath(driver, '//div[@id="productDescription"]')
         if element:

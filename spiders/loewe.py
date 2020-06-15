@@ -5,48 +5,42 @@ import of_utils
 
 class Loewe(of_spider.Spider):
     def parse_entry(self, driver):
-        view_all = of_utils.find_element_by_css_selector(driver, 'span.js-view-all-products')
-        if view_all:
-            driver.execute_script('arguments[0].click();', view_all)
-            of_utils.sleep(3)
-        product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-tile > figure.product-image > a.thumb-link')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
+            btn = of_utils.find_element_by_xpath(driver,'//a[@id="capds-js-search-loadmore"]')
+            if btn:
+                driver.execute_script('arguments[0].click();', btn)
                 of_utils.sleep(4)
             else:
-                break
-        return [element.get_attribute('href').strip() for element in elements]
+                break    
+      
+        elements = of_utils.find_elements_by_xpath(driver,'//div[@class="capds-producttile swiper-container"]')
+        return ['https://www.loewe.com'+element.get_attribute('data-url').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'div#product-content > div > h1.product-name')
+        element = of_utils.find_element_by_xpath(driver, '//span[@id="capds-js-product-name"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.details-table > ul.details-col-2 > li')
-        if len(elements) >= 2:
-            element = elements[1]
-            product['code'] = element.text.split(':')[-1].strip()
+        product['code'] = driver.current_url[driver.current_url.rfind('/')+1:driver.current_url.find('.html')]
+
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.price-and-size-wrapper > div.product-price > span.price-sales')
+        element = of_utils.find_element_by_xpath(driver, '//span[@class="capds-product__price--active"]')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
+
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.lw-pdp-container-images > div.js-show-zoom > picture > img')
-        if not elements:
-            element = of_utils.find_element_by_css_selector(driver, 'div.product-image-container > picture > img')
-            elements = [element]
-            _elements = of_utils.find_elements_by_css_selector(driver, 'div.js-show-zoom > picture > img')
-            elements += _elements
-        images = [element.get_attribute('src').strip() for element in elements]
-        images = list(set(images))
-        product['images'] = ';'.join(images)
-        # detail N/A
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="swiper-slide"]//img')
+        images = [e.get_attribute('src').strip() for e in elements]
+        product['images'] = ';'.join({}.fromkeys(images).keys())
+        
+        # detail
+        element = of_utils.find_element_by_xpath(driver,'//div[@class="capds-product__description"]/p')
+        if element:
+            product['detail'] = element.text.strip()
         return product
+

@@ -18,39 +18,27 @@ class Chloe(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
-        of_utils.sleep(5)
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.productName > div > span.modelName')
-        if not element:
-            element = of_utils.find_element_by_css_selector(driver,'h1.productName .modelName.inner')
+        element = of_utils.find_element_by_xpath(driver, '//h1[@class="productName "]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code N/A
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.itemBoxPrice > div > div.itemPrice > span.price > span.value')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="itemBoxPrice"]//span[@class="price"]//span[@class="value"]')
         if element:
-            price_text = element.text.strip().replace(',', '')
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'ul.productAlternative .slick-track .thumbWrap img')
-        if not elements:
-            raise of_errors.ImagesError('Images not found')
-        images = []
-        for element in elements:
-            img = element.get_attribute('src').strip().replace('_8_', '_22_')
-            images.append(img)
-        product['images'] = ';'.join(images)
+        elements = of_utils.find_elements_by_xpath(driver,'//ul[@class="alternativeImages"]//li//img')
+        images = [element.get_attribute('src').strip() if element.get_attribute('src') else element.get_attribute('data-origin')  for element in elements]
+        product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.itemdescription > span.value')
-        text = element.get_attribute('innerHTML').strip()
-        text = text.replace('<br><br>', '<br>')
-        texts = text.split('<br>')
-        for text in texts:
-            if text.startswith('商品编号'):
-                code = text.split('：')[-1].strip()
-                product['code'] = code
-        product['detail'] = '\n'.join(texts)
+        element = of_utils.find_element_by_xpath(driver, '//div[@class="attributesUpdater itemdescription"]//span[@class="value"]')
+        if element:
+            txt = element.get_attribute('innerHTML').strip()
+            product['detail'] = txt
+            product['code'] = txt[txt.find('商品编号')+5:] if txt.find('商品编号') >= 0 else ''
         return product

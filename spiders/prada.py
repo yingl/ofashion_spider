@@ -24,32 +24,28 @@ class Prada(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.entry-title')
+        element = of_utils.find_element_by_xpath(driver, '//h1[@class="pDetails__title"]')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'div.container > div.pdp-name > p.pdp-sku')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="mainPdpContent"]')
         if element:
-            product['code'] = element.text.strip()
+            product['code'] = element.get_attribute('data-partnumber')
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.container > div.pdp-name > p.pdp-price')
+        element = of_utils.find_element_by_xpath(driver, '//div[@class=" pDetails__priceItem"]//span[@class="price__value"]')
         if element:
-            price_text = element.get_attribute('innerHTML').strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.stiky-style-images > a.inventoryVariant > img')
-        if not elements:
-            elements = of_utils.find_elements_by_css_selector(driver, 'img.pdp-main-image')
-        images = [element.get_attribute('src').strip() for element in elements]
-        product['images'] = ';'.join(images)
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="pDetails__slide js-imgProduct slick-slide"]//img')
+        images = [element.get_attribute('src') for element in elements]
+        product['images'] = ';'.join({}.fromkeys(images).keys())
         # detail
-        texts = []
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.pdp-tab-longdesc > ul > li')
-        for element in elements:
-            texts.append(element.text.strip())
-        product['detail'] = '\n'.join(texts)
+        element = of_utils.find_element_by_xpath(driver, '//p[@class="pDetails__desc"]')
+        if element:    
+            product['detail'] = element.text.strip()
         return product
