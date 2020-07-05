@@ -5,6 +5,7 @@ import of_utils
 
 class Tiffany(of_spider.Spider):
     def parse_entry(self, driver):
+        driver.implicitly_wait(15)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'article.product-tile>a')
@@ -21,6 +22,7 @@ class Tiffany(of_spider.Spider):
         return [element.get_attribute('href').strip() for element in elements]
 
     def parse_product(self, driver):
+        driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
         element = of_utils.find_element_by_css_selector(driver, 'h1.t1')

@@ -10,35 +10,35 @@ def parse_product(driver):
         driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_xpath(driver, '//div[@class="c-product-details"]//h1[@class="c-title"]')
+        element = of_utils.find_element_by_css_selector(driver, 'h1.dpd-main__name')
         if element:
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_xpath(driver, '//div[@class="c-cod"]')
+        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-main__sku')
         if element:
-            product['code'] = element.text.replace('货号','').strip()
+            product['code'] = element.text.strip()[4:].strip()
         # price_cny
-        element = of_utils.find_element_by_xpath(driver, '//span[@class="c-realprice"]')
+        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-main__price')
         if element:
-            product['price_cny'] = of_utils.convert_price(element.text.strip())
+            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
+            product['price_cny'] = int(float(price_text))
         # images
-        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="c-vertical-scroll js-init-slick"]/div[@class="c-slide"]/span/img')
+        elements = of_utils.find_elements_by_css_selector(driver, 'div.dpd-visuals > div.dpd-visuals__assets > a > img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_xpath(driver,'//h2[@class="c-description"]')
+        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-info__body')
         if element:
-            product['detail'] = element.text.strip()
-            # product['detail'] = element.get_attribute('innerHTML').strip()
+            product['detail'] = element.get_attribute('innerHTML').strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.miumiu.com/cn/zh/bags/clutches/products.miu_delice%E7%9A%AE%E9%9D%A9%E6%89%8B%E8%A2%8B.5BP001_N88_F0770_V_IOO.html')
+        driver.get('https://www.ferragamo.cn/item-726305.html')
         product = parse_product(driver)
         print(product)
     except Exception as e:

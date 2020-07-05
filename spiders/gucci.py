@@ -5,13 +5,17 @@ import of_utils
 
 class Gucci(of_spider.Spider):
     def parse_entry(self, driver):
+        driver.implicitly_wait(15)
+        driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
         btn = of_utils.find_element_by_css_selector(driver, 'div.spice-looks-grid-button > a')
         if btn:
             driver.execute_script('arguments[0].click();', btn) # 点击“浏览所有”
         elements = of_utils.find_elements_by_css_selector(driver, 'ul.spice-float-clearfix > li > div > div > a.spice-item-grid')
         if not elements:
             elements = of_utils.find_elements_by_css_selector(driver, 'div#pdlist > div.grid-cell > div.product-tiles-box > a.spice-item-grid')
-        return [element.get_attribute('href').strip() for element in elements]
+        if not elements:
+            elements = of_utils.find_elements_by_xpath(driver,'//article//a')
+        return [element.get_attribute('href').strip() for element in elements if element.get_attribute('href') and '/zh/pr' in element.get_attribute('href')]
 
     def parse_product(self, driver):
         driver.implicitly_wait(15)

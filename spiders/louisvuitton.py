@@ -5,7 +5,7 @@ import of_utils
 
 class LouisVuitton(of_spider.Spider):
     def parse_entry(self, driver):
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(15)
         product_count = 0
         while True:
             elements = of_utils.find_elements_by_css_selector(driver, 'div.productItemContainer > a')
@@ -15,6 +15,9 @@ class LouisVuitton(of_spider.Spider):
                 elements = of_utils.find_elements_by_css_selector(driver, 'li.productItem > a')
             if not elements:
                 elements = of_utils.find_elements_by_css_selector(driver, 'li.lookItem > a')
+            if not elements:
+                elements = of_utils.find_elements_by_css_selector(driver, 'ul.lv-list-container a')
+
             if len(elements) > product_count:
                 product_count = len(elements)
                 driver.execute_script('window.scrollBy(0, document.body.scrollHeight);')
@@ -45,7 +48,7 @@ class LouisVuitton(of_spider.Spider):
         if element:
             product['price_cny'] = of_utils.convert_price(element.text.strip())
         # images
-        elements = of_utils.find_elements_by_xpath(driver, '//div[@id="productSheetSlideshow"]/div/div/ul/li/button/picture/source')
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@id="productSheetSlideshow"]//ul//li//button//picture//source')
         if len(elements) > 0:
             images = [element.get_attribute('srcset').split(',')[0].replace(' 1600w','').replace(' 1280w','').replace(' 1024w','').replace(' 640w','').replace(' 480w','').replace(' 320w','').replace(' 240w','') for element in elements]
             product['images'] = ';'.join({}.fromkeys(images).keys())

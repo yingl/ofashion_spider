@@ -87,25 +87,27 @@ def parse_entry(driver):
         # elements = of_utils.find_elements_by_xpath(driver,'//a[@class="product-result_image-link js-gtm-click"]')
         # return [element.get_attribute('href').strip() for element in elements]
 
-        driver.implicitly_wait(15)
+        # component-product-card
+        product_count = 0
         while True:
-            loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="o-viewMore"]')
-            if loadMore and 'display: none;' not in loadMore.get_attribute('style'):
-                loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="o-viewMore"]/a')
-                driver.execute_script('arguments[0].click();', loadMore)
-                of_utils.sleep(5)
+            elements = of_utils.find_elements_by_css_selector(driver, 'article.product-tile>a')
+            if len(elements) > product_count:
+                product_count = len(elements)
+                btn = of_utils.find_element_by_css_selector(driver, 'div.show-more>a')
+                if btn:
+                    driver.execute_script('arguments[0].click();', btn)
+                else:
+                    break
+                of_utils.sleep(6)
             else:
-                break    
-
-        elements = of_utils.find_elements_by_xpath(driver,'//a[@class="js-product-link"]')
+                break
         return [element.get_attribute('href').strip() for element in elements]
-
 
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.miumiu.com/cn/zh/bags/clutches.html')
+        driver.get('https://www.tiffany.cn/accessories/shop/mens-accessories/')
         products = parse_entry(driver)
         print(products)
         print(len(products))

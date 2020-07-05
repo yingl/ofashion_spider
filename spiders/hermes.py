@@ -5,6 +5,7 @@ import of_utils
 
 class Hermes(of_spider.Spider):
     def parse_entry(self, driver):
+        driver.implicitly_wait(15)
         load_more = of_utils.find_element_by_css_selector(driver, 'button.load-more-button')
         if load_more:
             driver.execute_script('arguments[0].click();', load_more)
