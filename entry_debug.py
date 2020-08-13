@@ -88,26 +88,18 @@ def parse_entry(driver):
         # return [element.get_attribute('href').strip() for element in elements]
 
         # component-product-card
-        product_count = 0
-        while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'article.product-tile>a')
-            if len(elements) > product_count:
-                product_count = len(elements)
-                btn = of_utils.find_element_by_css_selector(driver, 'div.show-more>a')
-                if btn:
-                    driver.execute_script('arguments[0].click();', btn)
-                else:
-                    break
-                of_utils.sleep(6)
-            else:
-                break
+
+
+        driver.implicitly_wait(15)
+        elements = of_utils.find_elements_by_xpath(driver,'//div[@class="h-100 position-relative product-tile"]/a')    
         return [element.get_attribute('href').strip() for element in elements]
 
+       
 if __name__ == '__main__':
     driver = None
     try:
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.tiffany.cn/accessories/shop/mens-accessories/')
+        driver.get('https://www.debeers.com.cn/zh-cn/jewellery/horizon/')
         products = parse_entry(driver)
         print(products)
         print(len(products))

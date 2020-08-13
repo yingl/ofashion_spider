@@ -2,26 +2,34 @@ import sys
 sys.path.append('../')
 import of_spider
 import of_utils
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
 
 class Prada(of_spider.Spider):
     def parse_entry(self, driver):
-        btn = of_utils.find_element_by_css_selector(driver, 'button#viewAll')
-        if btn:
-            driver.execute_script('arguments[0].click();', btn)
+        driver.implicitly_wait(15)
+        loadMore = of_utils.find_element_by_xpath(driver,'//div[@class="loadMore isVisible"]/button')
+        if loadMore:
+                driver.execute_script('arguments[0].click();', loadMore)
+                of_utils.sleep(4)
+
         product_count = 0
         while True:
-            elements = of_utils.find_elements_by_css_selector(driver, 'div.product-img > a')
+            elements = of_utils.find_elements_by_xpath(driver, '//a[@class="productQB__wrapperImage js-product-qb-link"]')
             if len(elements) > product_count:
                 product_count = len(elements)
-                btn = of_utils.find_element_by_css_selector(driver, 'button#discoverMore')
-                if btn:
-                    driver.execute_script('arguments[0].click();', btn)
-                else:
-                    break
-                of_utils.sleep(6)
+                action = ActionChains(driver).move_to_element(elements[-1])
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.send_keys(Keys.PAGE_DOWN)
+                action.perform()
+                of_utils.sleep(4)
             else:
                 break
-        return [element.get_attribute('href').strip() for element in elements]
+        return [element.get_attribute('href').strip() for element in elements]  
 
     def parse_product(self, driver):
         driver.implicitly_wait(15)

@@ -5,40 +5,45 @@ import of_spider
 import of_utils
 import re
 import json
+from urllib.request import urlopen
+from json import load
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
 
 def parse_product(driver):
         driver.implicitly_wait(15)
         product = of_spider.empty_product.copy()
         # title
-        element = of_utils.find_element_by_css_selector(driver, 'h1.dpd-main__name')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="productInfoDiv"]//span[@class="dbj-font-header2"]')
         if element:
-            product['title'] = element.text.strip()
+            product['title'] = element.get_attribute('innerHTML')
         else:
             raise Exception('Title not found')
         # code
-        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-main__sku')
+        element = of_utils.find_element_by_xpath(driver, '//p[@class="dbj-font-caption1-alt1 pb-1 dbj-border-top"]/span')
         if element:
-            product['code'] = element.text.strip()[4:].strip()
+            product['code'] = element.get_attribute('innerHTML').replace('&nbsp;','')
         # price_cny
-        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-main__price')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="productInfoDiv"]//span[@class="dbj-font-header6 product-price"]')
         if element:
-            price_text = element.text.strip()[1:].strip().replace(',', '') # 去掉开头的¥
-            product['price_cny'] = int(float(price_text))
+            product['price_cny'] = of_utils.convert_price(element.get_attribute('innerHTML'))
         # images
-        elements = of_utils.find_elements_by_css_selector(driver, 'div.dpd-visuals > div.dpd-visuals__assets > a > img')
+        elements = of_utils.find_elements_by_xpath(driver, '//div[@class="zoom-trap"]/img')
         images = [element.get_attribute('src').strip() for element in elements]
         product['images'] = ';'.join(images)
         # detail
-        element = of_utils.find_element_by_css_selector(driver, 'div.dpd-info__body')
+        element = of_utils.find_element_by_xpath(driver, '//div[@id="pdpDesktopSlot1"]//p[@class="dbj-font-body1"]')
         if element:
-            product['detail'] = element.get_attribute('innerHTML').strip()
+            product['detail'] = element.text.strip()
         return product
 
 if __name__ == '__main__':
     driver = None
     try:
+        # ip = urlopen('http://ip.42.pl/raw').read()
+        # print(ip)
         driver = of_utils.create_chrome_driver()
-        driver.get('https://www.ferragamo.cn/item-726305.html')
+        driver.get('https://www.debeers.com.cn/zh-cn/horizon-full-pav%C3%A9-band-in-white-gold/R102281.html')
         product = parse_product(driver)
         print(product)
     except Exception as e:

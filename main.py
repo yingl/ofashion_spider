@@ -7,6 +7,7 @@ import of_config
 import of_database
 import of_queue
 import of_utils
+import json
 
 logger = of_utils.create_flogger(__file__)
 
@@ -56,7 +57,12 @@ def loop(config):
 #     spider.proc(brand, job['source_id'], job['pid'], url)
 
 if __name__ == '__main__':
-    args = parse_args()
-    config = importlib.import_module(args.config)
-    loop(config)
+    # args = parse_args()
+    # config = importlib.import_module(args.config)
+    # loop(config)
     # test(config)
+
+    a = '{"source_id":226663,"pid":-1,"url":"https://www.debeers.com.cn/zh-cn/jewellery/classics/","spider":null}'.replace('null','')
+    b = json.dumps(a)
+    c = eval(a)
+    print(c['url'])

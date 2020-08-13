@@ -2,6 +2,8 @@ import sys
 sys.path.append('../')
 import of_spider
 import of_utils
+from selenium.webdriver.common.action_chains import ActionChains # 对该页面特别处理
+from selenium.webdriver.common.keys import Keys
 
 class MiuMiu(of_spider.Spider):
     def parse_entry(self, driver):
@@ -27,6 +29,15 @@ class MiuMiu(of_spider.Spider):
             product['title'] = element.text.strip()
         else:
             raise Exception('Title not found')
+
+        action = ActionChains(driver).move_to_element(element)
+        action.send_keys(Keys.PAGE_DOWN)
+        action.send_keys(Keys.PAGE_DOWN)
+        action.send_keys(Keys.PAGE_DOWN)
+        action.send_keys(Keys.PAGE_DOWN)
+        action.send_keys(Keys.PAGE_DOWN)
+        action.perform()
+        of_utils.sleep(4)
         # code
         element = of_utils.find_element_by_xpath(driver, '//div[@class="c-cod"]')
         if element:
